@@ -95,7 +95,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _Alpha: 0.704
+    - _Alpha: 0.747
     - _AlphaClip: 0
     - _AlphaToMask: 0
     - _Blend: 0
@@ -133,9 +133,9 @@ Material:
     - _SrcBlendAlpha: 1
     - _Surface: 0
     - _WorkflowMode: 1
-    - _Ysmooth: 1
+    - _Ysmooth: 1.28
     - _ZWrite: 1
-    - _yoffset: 1
+    - _yoffset: -0.4
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 0.9858491, g: 1, b: 0.9901566, a: 1}

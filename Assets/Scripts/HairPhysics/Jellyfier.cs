@@ -5,8 +5,9 @@ using UnityEngine;
 public class Jellyfier : MonoBehaviour
 {
     public float bounceSpeed;
-    public float fallForce;
     public float stiffness;
+    
+    public Rigidbody body;
 
     private MeshFilter meshFilter;
     private Mesh mesh;
@@ -19,6 +20,8 @@ public class Jellyfier : MonoBehaviour
         meshFilter = GetComponent<MeshFilter>();
         mesh = meshFilter.mesh;
 
+        body.angularVelocity= new Vector3(0,1,1);
+
         GetVertices();
     }
 
@@ -26,15 +29,18 @@ public class Jellyfier : MonoBehaviour
     {
         jellyVerticies = new JellyVertex[mesh.vertices.Length];
         currentMeshVerticies = new Vector3[mesh.vertices.Length];
+
         for (int i = 0; i < mesh.vertices.Length; i++)
         {
-            jellyVerticies[i] = new JellyVertex(i, mesh.vertices[i], mesh.vertices[i], Vector3.zero);
+            jellyVerticies[i] = new JellyVertex(i, mesh.vertices[i], mesh.vertices[i], Vector3.zero, mesh.colors[i]);
             currentMeshVerticies[i] = mesh.vertices[i];
         }
     }
 
     private void Update()
     {
+        ApplyPressureToFullForm(-body.velocity * Time.deltaTime * .75f);
+        ApplyAngularPressureToFullForm();
         UpdateVertices();
     }
 
@@ -60,10 +66,27 @@ public class Jellyfier : MonoBehaviour
         ContactPoint[] collisionPoints = other.contacts;
         for (int i=0; i < collisionPoints.Length; i++)
         {
-            Vector3 inputPoint = collisionPoints[i].point + (collisionPoints[i].point * .1f);
-            ApplyPressureToPoint(inputPoint, fallForce);
+            ApplyPressureToFullForm(-other.relativeVelocity * .25f);
         }
     }
+
+    public void ApplyPressureToFullForm(Vector3 _force)
+    {
+        Vector3 force_localized = transform.InverseTransformDirection(_force);
+
+        for(int i = 0; i < jellyVerticies.Length; i++)
+        {
+            jellyVerticies[i].ApplyPressureToFullForm(force_localized);
+        }
+    }
+
+    public void ApplyAngularPressureToFullForm()
+    {
+        for(int i = 0; i < jellyVerticies.Length; i++)
+        {
+            jellyVerticies[i].ApplyAngularPressureToFullForm(body);
+        }
+    }   
 
     public void ApplyPressureToPoint(Vector3 _point, float _pressure)
     {

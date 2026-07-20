@@ -110,16 +110,16 @@ public class FeetMovement : MonoBehaviour
     void  UpdateInputs()
     {
         float leftX = -Input.GetAxis("Left Horizontal");
-        float leftY = Input.GetAxis("Left Vertical");
+        float leftY = Input.GetAxis("Left Vertical") * .5f;
         float rightX = -Input.GetAxis("Right Horizontal");
-        float rightY = Input.GetAxis("Right Vertical");
+        float rightY = Input.GetAxis("Right Vertical") * .5f;
 
         leftFootInput = new Vector2(leftX, leftY);
         rightFootInput = new Vector2(rightX, rightY);
 
         //Crotch Raising
-        bool leftRaise = leftFoot.OnGround && rightY < -0.5f && leftLegExtension <.81f;
-        bool rightRaise = rightFoot.OnGround && leftY < -0.5f && rightLegExtension <.81f;
+        bool leftRaise = leftFoot.OnGround && rightY < -0.3f && leftLegExtension <.81f;
+        bool rightRaise = rightFoot.OnGround && leftY < -0.3f && rightLegExtension <.81f;
         desiresRaiseCrotch = (leftRaise || rightRaise);
 
         //Crotch Lowering

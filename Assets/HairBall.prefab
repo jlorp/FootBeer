@@ -11,17 +11,17 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: a618281920f5cf84f9d1218bc2ec3feb,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.394
+      value: 0.45064288
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: a618281920f5cf84f9d1218bc2ec3feb,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.789
+      value: 0.816
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: a618281920f5cf84f9d1218bc2ec3feb,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0.065
+      value: -0.03864324
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: a618281920f5cf84f9d1218bc2ec3feb,
         type: 3}
@@ -103,9 +103,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1cac5ca45e2d9b444ad1cbb9c84887df, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bounceSpeed: 40
-  fallForce: 2
-  stiffness: 3
+  bounceSpeed: 85
+  stiffness: 2
+  hairMovement: 1
+  scale: 5
+  scrollSpeed: 1
+  positionEffect: 0.25
   body: {fileID: 5649266209768999020}
 --- !u!54 &5649266209768999020
 Rigidbody:

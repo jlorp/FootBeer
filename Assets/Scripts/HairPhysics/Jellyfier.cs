@@ -4,9 +4,16 @@ using UnityEngine;
 
 public class Jellyfier : MonoBehaviour
 {
+    [Header("Hair Simulation")]
     public float bounceSpeed;
     public float stiffness;
-    
+    public float hairMovement = .75f;
+
+    [Header("Hair Sim: Noise")]
+    public float scale = 5;
+    public float scrollSpeed = 1;
+    public float positionEffect = .25f;
+
     public Rigidbody body;
 
     private MeshFilter meshFilter;
@@ -39,8 +46,9 @@ public class Jellyfier : MonoBehaviour
 
     private void Update()
     {
-        ApplyPressureToFullForm(-body.velocity * Time.deltaTime * .75f);
-        ApplyAngularPressureToFullForm();
+        ApplyPressureToFullForm(-body.velocity * Time.deltaTime * hairMovement);
+        //ApplyAngularPressureToFullForm();
+        ApplyNoise(scale, scrollSpeed, positionEffect);
         UpdateVertices();
     }
 
@@ -85,6 +93,14 @@ public class Jellyfier : MonoBehaviour
         for(int i = 0; i < jellyVerticies.Length; i++)
         {
             jellyVerticies[i].ApplyAngularPressureToFullForm(body);
+        }
+    }  
+
+    public void ApplyNoise(float _scale, float _scrollSpeed, float _positionEffect)
+    {
+        for(int i = 0; i < jellyVerticies.Length; i++)
+        {
+            jellyVerticies[i].ApplyNoise(_scale, _scrollSpeed, _positionEffect);
         }
     }   
 

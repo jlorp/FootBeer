@@ -39,10 +39,22 @@ public class JellyVertex : MonoBehaviour
     {
         currentVelocity += _force * vertRedAmount;
     }
+
     public void ApplyAngularPressureToFullForm(Rigidbody _body)
     {
         Vector3 velocityAtPosition = _body.GetPointVelocity(_body.transform.TransformPoint(initialVertexPosition)) - _body.velocity;
         currentVelocity += velocityAtPosition * vertRedAmount * Time.deltaTime * -2f;
+    }
+
+    public void ApplyNoise(float scale, float scrollSpeed, float positionEffect)
+    {
+        float xNorm = initialVertexPosition.x * scale + (Time.time * scrollSpeed) + 1000;
+        float yNorm = initialVertexPosition.y * scale + (Time.time * scrollSpeed) + 1000;
+
+        float noiseFloat= (Mathf.PerlinNoise(xNorm, yNorm)*2)-1 ;
+        float noiseFloat2 = (Mathf.PerlinNoise(yNorm, xNorm)*2)-1;
+        Vector3 noise= new Vector3(noiseFloat, noiseFloat2, 0);
+        currentVelocity += noise * vertRedAmount * Time.deltaTime * positionEffect;
     }
 
     public void ApplyPressureToVertex(Transform _transform, Vector3 _position, float _pressure)

@@ -17,7 +17,7 @@ RenderSettings:
   m_Fog: 1
   m_FogColor: {r: 0.102394104, g: 0.5566038, b: 0.5507022, a: 1}
   m_FogMode: 3
-  m_FogDensity: 0.06
+  m_FogDensity: 0.05
   m_LinearFogStart: 7.2
   m_LinearFogEnd: 19.67
   m_AmbientSkyColor: {r: 0.2559185, g: 0.764151, b: 0.5850595, a: 1}
@@ -5944,8 +5944,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1cac5ca45e2d9b444ad1cbb9c84887df, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bounceSpeed: 75
-  stiffness: 4
+  bounceSpeed: 85
+  stiffness: 2
+  hairMovement: 1
+  scale: 5
+  scrollSpeed: 1
+  positionEffect: 0.25
   body: {fileID: 578692981}
 --- !u!114 &733747326
 MonoBehaviour:
@@ -5959,8 +5963,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1cac5ca45e2d9b444ad1cbb9c84887df, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bounceSpeed: 75
-  stiffness: 4
+  bounceSpeed: 85
+  stiffness: 2
+  hairMovement: 1
+  scale: 5
+  scrollSpeed: 1
+  positionEffect: 0.25
   body: {fileID: 578692981}
 --- !u!114 &733747327
 MonoBehaviour:
@@ -5974,8 +5982,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1cac5ca45e2d9b444ad1cbb9c84887df, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bounceSpeed: 75
-  stiffness: 4
+  bounceSpeed: 85
+  stiffness: 2
+  hairMovement: 1
+  scale: 5
+  scrollSpeed: 1
+  positionEffect: 0.25
   body: {fileID: 1521116885}
 --- !u!114 &733747328
 MonoBehaviour:
@@ -5989,8 +6001,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1cac5ca45e2d9b444ad1cbb9c84887df, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bounceSpeed: 75
-  stiffness: 4
+  bounceSpeed: 85
+  stiffness: 2
+  hairMovement: 1
+  scale: 5
+  scrollSpeed: 1
+  positionEffect: 0.25
   body: {fileID: 1521116885}
 --- !u!1 &799819515
 GameObject:
@@ -7116,13 +7132,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 2100000, guid: a37255041c02b204e94bbff003f9ed58, type: 2}
   m_DrawDistance: 1000
-  m_FadeScale: 0.505
+  m_FadeScale: 1
   m_StartAngleFade: 0
   m_EndAngleFade: 72.08236
   m_UVScale: {x: 3, y: 3}
   m_UVBias: {x: 0, y: 0}
   m_DecalLayerMask: 1
-  m_ScaleMode: 0
+  m_ScaleMode: 1
   m_Offset: {x: 0, y: 0, z: 2.5}
   m_Size: {x: 3, y: 2, z: 5}
   m_FadeFactor: 1
@@ -12177,22 +12193,22 @@ PrefabInstance:
     - target: {fileID: -8839261007197706515, guid: 427f2bab779d5504a85af9cb28cfd3ba,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.58886063
+      value: 0.5888606
       objectReference: {fileID: 0}
     - target: {fileID: -8839261007197706515, guid: 427f2bab779d5504a85af9cb28cfd3ba,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.1994455
+      value: -0.19944546
       objectReference: {fileID: 0}
     - target: {fileID: -8839261007197706515, guid: 427f2bab779d5504a85af9cb28cfd3ba,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.13914569
+      value: -0.13914558
       objectReference: {fileID: 0}
     - target: {fileID: -8839261007197706515, guid: 427f2bab779d5504a85af9cb28cfd3ba,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.7707809
+      value: 0.770781
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 427f2bab779d5504a85af9cb28cfd3ba,
         type: 3}
@@ -12357,22 +12373,22 @@ PrefabInstance:
     - target: {fileID: 4911435179346600312, guid: 427f2bab779d5504a85af9cb28cfd3ba,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: -0.9667139
+      value: -0.9667138
       objectReference: {fileID: 0}
     - target: {fileID: 4911435179346600312, guid: 427f2bab779d5504a85af9cb28cfd3ba,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.0022593436
+      value: -0.0022591648
       objectReference: {fileID: 0}
     - target: {fileID: 4911435179346600312, guid: 427f2bab779d5504a85af9cb28cfd3ba,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.006769537
+      value: -0.006769507
       objectReference: {fileID: 0}
     - target: {fileID: 4911435179346600312, guid: 427f2bab779d5504a85af9cb28cfd3ba,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.25576025
+      value: 0.25576052
       objectReference: {fileID: 0}
     - target: {fileID: 5152398313394438436, guid: 427f2bab779d5504a85af9cb28cfd3ba,
         type: 3}

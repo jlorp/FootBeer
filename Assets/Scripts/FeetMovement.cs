@@ -4,27 +4,46 @@ using UnityEngine;
 
 public class FeetMovement : MonoBehaviour
 {
+    [Header("Feet Movement")]
+    public float acceleration;
+    public float maxSpeed;
+    public float dragNoInput;
+    public FootCode leftFoot,rightFoot;
+    public Transform rKneeBone,lKneeBone;
+
+    [Header("Crotch Rotation")]
+    public Transform crotch;
+    public Transform rightLegBase, leftLegBase;
+
+    float crotchRotateInput;
+
+    [Header("Foot Rotation")]
+    public Transform rFootBone;
+    public Transform lFootBone;
+
+    public Vector3 lFootIdleRot, rFootIdleRot;
+    public Vector3 rFootGroundedRotation,lFootGroundedRotation;
+
+    [Header("Dependencies")]
+    public bool grounded;
+    public Rigidbody rightFootRB,leftFootRB, crotchRB;
+
     //Input
     Vector2 rightFootInput, leftFootInput;
     bool desiresRaiseCrotch, desiresLowerCrotch;
-    float crotchRotateInput;
-    public Transform crotch;
-
-    public Rigidbody rightFootRB,leftFootRB, crotchRB;
-    public Transform rightLegBase, leftLegBase;
-
-    public float acceleration, maxSpeed, dragNoInput;
-
-    public bool grounded;
-
-    public FootCode leftFoot,rightFoot;
     float leftLegExtension,rightLegExtension;
 
+    void Start()
+    {
+        lFootIdleRot = lFootBone.localEulerAngles;
+        rFootIdleRot = rFootBone.localEulerAngles;
+    }
 
     void Update()
     {
         UpdateInputs();
-        RotateCrotch(5, 2);
+        RotateCrotch(5f, 2f);
+        RotateFeet(5f);
     }
 
     void FixedUpdate()
@@ -32,6 +51,35 @@ public class FeetMovement : MonoBehaviour
         MoveFeet();
         UpdateGrounded();
         MoveCrotch();
+    }
+    
+    void RotateFoot(Vector3 idleRotationVector, bool isGrounded, Vector3 footVelocity, Transform foot, Transform knee, float rotateSpeed, Vector3 footGroundedRotation, float rightLeft)
+    {
+        Vector3 desiredRotationVector = idleRotationVector;
+        float footExtensionAmount = Mathf.Clamp((Mathf.Abs(knee.localEulerAngles.z)-260)/100,0,1);
+        
+
+        if(isGrounded)
+        {
+            foot.rotation = Quaternion.Lerp(foot.rotation, Quaternion.Euler(footGroundedRotation), rotateSpeed * 2 * Time.deltaTime);
+        }
+        else
+        {
+            Vector3 footPointRotation = new Vector3(19.2f, 33f, 64.8f);
+            footPointRotation *= footExtensionAmount;
+            desiredRotationVector += footPointRotation;
+
+            desiredRotationVector.z += footVelocity.y * 50f;
+            desiredRotationVector.y += footVelocity.x * 50f * rightLeft;
+
+            foot.localRotation = Quaternion.Lerp(foot.localRotation, Quaternion.Euler(desiredRotationVector), rotateSpeed * Time.deltaTime);
+        }
+    }
+
+    void RotateFeet(float rotateSpeed)
+    {
+        RotateFoot(rFootIdleRot, rightFoot.OnGround, leftFootRB.velocity, rFootBone, rKneeBone, rotateSpeed, rFootGroundedRotation, 1);
+        RotateFoot(lFootIdleRot, leftFoot.OnGround, rightFootRB.velocity, lFootBone, lKneeBone, rotateSpeed, lFootGroundedRotation, -1);
     }
 
     void RotateCrotch(float maxRotation, float rotateSpeed)

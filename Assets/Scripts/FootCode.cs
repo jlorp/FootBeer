@@ -19,10 +19,7 @@ public class FootCode : MonoBehaviour
         minGroundDotProduct = Mathf.Cos(maxGroundAngle * Mathf.Deg2Rad);
     }
 
-    void OnCollisionEnter (Collision collision) 
-    {
-		EvaluateCollision(collision);
-	}
+
 
 	void OnCollisionStay (Collision collision) 
     {
@@ -49,7 +46,9 @@ public class FootCode : MonoBehaviour
     {
         stepsSinceLastGrounded += 1;
         if(OnGround) stepsSinceLastGrounded = 0;
+
         OnGround = (groundContactCount > 0);
+        
         ClearState();
     }
 

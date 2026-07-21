@@ -61,7 +61,7 @@ public class FeetMovement : MonoBehaviour
 
         if(isGrounded)
         {
-            foot.rotation = Quaternion.Lerp(foot.rotation, Quaternion.Euler(footGroundedRotation), rotateSpeed * 2 * Time.deltaTime);
+            foot.rotation = Quaternion.Lerp(foot.rotation, Quaternion.Euler(footGroundedRotation), rotateSpeed * Time.deltaTime);
         }
         else
         {

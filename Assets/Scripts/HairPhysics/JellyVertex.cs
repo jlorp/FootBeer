@@ -42,7 +42,7 @@ public class JellyVertex : MonoBehaviour
 
     public void ApplyAngularPressureToFullForm(Rigidbody _body)
     {
-        Vector3 velocityAtPosition = _body.GetPointVelocity(_body.transform.TransformPoint(initialVertexPosition)) - _body.velocity;
+        Vector3 velocityAtPosition = _body.GetPointVelocity(_body.transform.TransformPoint(initialVertexPosition));
         Vector3 relativeVelocity = _body.transform.InverseTransformDirection(velocityAtPosition);;
         currentVelocity += relativeVelocity * vertRedAmount * Time.deltaTime * -2f;
     }

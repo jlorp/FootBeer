@@ -42,13 +42,13 @@ public class FeetMovement : MonoBehaviour
     void Update()
     {
         UpdateInputs();
-        RotateCrotch(5f, 2f);
         RotateFeet(5f);
     }
 
     void FixedUpdate()
     {
         MoveFeet();
+        RotateCrotch(5f, 2f);
         UpdateGrounded();
         MoveCrotch();
     }
@@ -85,7 +85,8 @@ public class FeetMovement : MonoBehaviour
     void RotateCrotch(float maxRotation, float rotateSpeed)
     {
         Quaternion desiredRotation = Quaternion.Euler(0,0,maxRotation * crotchRotateInput);
-        crotch.rotation = Quaternion.Lerp(crotch.rotation, desiredRotation, rotateSpeed * Time.deltaTime);
+        Quaternion newRotation = Quaternion.Lerp(crotch.rotation, desiredRotation, rotateSpeed * Time.deltaTime);
+        crotchRB.MoveRotation(newRotation);
     }
 
     void MoveCrotch()

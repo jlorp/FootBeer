@@ -6,6 +6,10 @@ public class FootCode : MonoBehaviour
 {
     [SerializeField, Range(0f, 90f)] 
 	float maxGroundAngle = 25f;
+    ConfigurableJoint joint;
+
+    public bool atLimit;
+    public Vector3 directionToAnchor;
 
     float minGroundDotProduct;
     int groundContactCount;
@@ -17,6 +21,7 @@ public class FootCode : MonoBehaviour
     void Start()
     {
         minGroundDotProduct = Mathf.Cos(maxGroundAngle * Mathf.Deg2Rad);
+        joint = GetComponent<ConfigurableJoint>();
     }
 
 
@@ -48,6 +53,13 @@ public class FootCode : MonoBehaviour
         if(OnGround) stepsSinceLastGrounded = 0;
 
         OnGround = (groundContactCount > 0);
+
+        Vector3 footPosition = transform.TransformPoint(joint.anchor);
+        Vector3 anchorPosition = joint.connectedBody.transform.TransformPoint(joint.connectedAnchor);
+        float distanceToAnchor = Vector3.Distance(footPosition,anchorPosition);
+        atLimit =  (distanceToAnchor) >= joint.linearLimit.limit;
+
+        directionToAnchor = (anchorPosition-footPosition).normalized;
         
         ClearState();
     }

@@ -5904,6 +5904,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxGroundAngle: 45
+  atLimit: 0
+  directionToAnchor: {x: 0, y: 0, z: 0}
   OnGround: 0
   groundMask:
     serializedVersion: 2
@@ -5955,7 +5957,7 @@ MonoBehaviour:
   hairMovement: 0.8
   scale: 5
   scrollSpeed: 1
-  positionEffect: 0.25
+  positionEffect: 0.35
   body: {fileID: 578692981}
 --- !u!114 &733747326
 MonoBehaviour:
@@ -5974,7 +5976,7 @@ MonoBehaviour:
   hairMovement: 0.8
   scale: 5
   scrollSpeed: 1
-  positionEffect: 0.25
+  positionEffect: 0.35
   body: {fileID: 1024131142}
 --- !u!114 &733747327
 MonoBehaviour:
@@ -5993,7 +5995,7 @@ MonoBehaviour:
   hairMovement: 0.8
   scale: 5
   scrollSpeed: 1
-  positionEffect: 0.25
+  positionEffect: 0.35
   body: {fileID: 1521116885}
 --- !u!114 &733747328
 MonoBehaviour:
@@ -6012,7 +6014,7 @@ MonoBehaviour:
   hairMovement: 0.8
   scale: 5
   scrollSpeed: 1
-  positionEffect: 0.25
+  positionEffect: 0.35
   body: {fileID: 1434388098}
 --- !u!1 &799819515
 GameObject:
@@ -6366,6 +6368,8 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 1434388099}
+  - {fileID: 1024131143}
   - {fileID: 799819516}
   - {fileID: 809698263}
   - {fileID: 1462425564}
@@ -6474,12 +6478,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1024131140}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.154, y: 0.448, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.154, y: 0.44700003, z: 0}
   m_LocalScale: {x: 0.15147, y: 0.15147, z: 0.15147}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 959978839}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &1024131144
 MeshFilter:
@@ -7022,12 +7026,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1434388094}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.214, y: 0.448, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -0.214, y: 0.44700003, z: 0}
   m_LocalScale: {x: 0.15147, y: 0.15147, z: 0.15147}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 959978839}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1462425563
 GameObject:
@@ -7366,6 +7370,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxGroundAngle: 45
+  atLimit: 0
+  directionToAnchor: {x: 0, y: 0, z: 0}
   OnGround: 0
   groundMask:
     serializedVersion: 2
@@ -7592,7 +7598,7 @@ Rigidbody:
   m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 1
-  m_Constraints: 122
+  m_Constraints: 120
   m_CollisionDetection: 1
 --- !u!65 &1725437467
 BoxCollider:
@@ -17900,5 +17906,3 @@ SceneRoots:
   - {fileID: 1717852927}
   - {fileID: 543450653497112406}
   - {fileID: 1482677795}
-  - {fileID: 1024131143}
-  - {fileID: 1434388099}

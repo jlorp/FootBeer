@@ -17,6 +17,9 @@ public class FeetMovement : MonoBehaviour
 
     float crotchRotateInput;
 
+    [Header("Crotch Movement")]
+    Vector3 crotchMovementInput;
+
     [Header("Foot Rotation")]
     public Transform rFootBone;
     public Transform lFootBone;
@@ -31,7 +34,6 @@ public class FeetMovement : MonoBehaviour
     //Input
     Vector2 rightFootInput, leftFootInput;
     bool desiresRaiseCrotch, desiresLowerCrotch;
-    float leftLegExtension,rightLegExtension;
 
     void Start()
     {
@@ -91,25 +93,33 @@ public class FeetMovement : MonoBehaviour
 
     void MoveCrotch()
     {
+        //add gravity if not grounded
         if(!grounded)
         {
-           UpdateCrotchVelocity(0,-.15f);
+            crotchMovementInput +=(Vector3.up * -.15f);
         }
-        else
+        else if(crotchMovementInput.y == 0)
         {
-            if(desiresRaiseCrotch)
-            {
-                UpdateCrotchVelocity(0, .4f);
-            }
-            else if(crotchRB.velocity.y > 0f || desiresLowerCrotch)
-            {
-                UpdateCrotchVelocity(0, -.25f);
-            }
-            else if(crotchRB.velocity.y < 0)
-            {
-                UpdateCrotchVelocity(0, .25f);
-            }
+            crotchMovementInput.y = (-Mathf.Sign(crotchRB.velocity.y) * 0.1f);
         }
+
+        UpdateCrotchVelocity(crotchMovementInput.x, crotchMovementInput.y);
+
+        // if(grounded)
+        // {
+        //     if(desiresRaiseCrotch)
+        //     {
+        //         UpdateCrotchVelocity(0, .4f);
+        //     }
+        //     else if(crotchRB.velocity.y > 0f || desiresLowerCrotch)
+        //     {
+        //         UpdateCrotchVelocity(0, -.25f);
+        //     }
+        //     else if(crotchRB.velocity.y < 0)
+        //     {
+        //         UpdateCrotchVelocity(0, .25f);
+        //     }
+        // }
     }
 
     void UpdateCrotchVelocity(float x, float y)
@@ -117,18 +127,15 @@ public class FeetMovement : MonoBehaviour
         Vector3 crotchVelocity = crotchRB.velocity;
         crotchVelocity.y += Time.deltaTime * y;
         crotchVelocity.x += Time.deltaTime * x;
-        crotchRB.velocity= crotchVelocity;
+        crotchRB.velocity = crotchVelocity;
     }
 
     void MoveFeet()
     {
-        AdjustBodyVelocity(rightFootRB, rightFootInput);
-        AdjustBodyVelocity(leftFootRB, leftFootInput);
+        AdjustBodyVelocity(rightFootRB, new Vector2(rightFootInput.x, rightFootInput.y *.5f));
+        AdjustBodyVelocity(leftFootRB, new Vector2(leftFootInput.x, leftFootInput.y * .5f));
         AddLegTension(leftFootRB);
         AddLegTension(rightFootRB);
-
-        rightLegExtension = Vector3.Distance(rightLegBase.position, rightFoot.gameObject.transform.position);
-        leftLegExtension = Vector3.Distance(leftLegBase.position, leftFoot.gameObject.transform.position);
     }
 
     void AddLegTension(Rigidbody body)
@@ -159,23 +166,46 @@ public class FeetMovement : MonoBehaviour
     void  UpdateInputs()
     {
         float leftX = -Input.GetAxis("Left Horizontal");
-        float leftY = Input.GetAxis("Left Vertical") * .5f;
+        float leftY = Input.GetAxis("Left Vertical");
         float rightX = -Input.GetAxis("Right Horizontal");
-        float rightY = Input.GetAxis("Right Vertical") * .5f;
+        float rightY = Input.GetAxis("Right Vertical");
 
         leftFootInput = new Vector2(leftX, leftY);
         rightFootInput = new Vector2(rightX, rightY);
 
         //Crotch Raising
-        bool leftRaise = leftFoot.OnGround && rightY < -0.3f && leftLegExtension <.81f;
-        bool rightRaise = rightFoot.OnGround && leftY < -0.3f && rightLegExtension <.81f;
+        bool leftRaise = leftFoot.OnGround && rightY < -0.3f && !leftFoot.atLimit;
+        bool rightRaise = rightFoot.OnGround && leftY < -0.3f && !rightFoot.atLimit;
         desiresRaiseCrotch = (leftRaise || rightRaise);
 
         //Crotch Lowering
-        bool leftTooTall= leftFoot.OnGround && leftLegExtension > .815f;
-        bool leftStretchDown= !leftFoot.OnGround && (rightY < 0 || rightX < 0 ) && leftLegExtension >.78;
-        bool rightTooTall= rightFoot.OnGround && rightLegExtension > .815f;
-        bool rightStretchDown = !rightFoot.OnGround && (leftY < 0 || leftX > 0 ) && rightLegExtension >.77;;
+        bool leftTooTall= leftFoot.OnGround && leftFoot.atLimit;
+        bool leftStretchDown= !leftFoot.OnGround && (rightY < 0 || rightX < 0 ) && leftFoot.atLimit;
+        bool rightTooTall= rightFoot.OnGround && rightFoot.atLimit;
+        bool rightStretchDown = !rightFoot.OnGround && (leftY < 0 || leftX > 0 ) && rightFoot.atLimit;
+
+        //crotch move input
+        float crotchMoveSpeedx =.25f;
+        float crotchmovespeedy =.25f;
+
+        float leftFootLimitDot = Mathf.Clamp(Vector3.Dot(-leftFoot.directionToAnchor, rightFootInput), 0, 1);
+        Vector3 leftFootCrotchInput = rightFootInput * leftFootLimitDot;
+        leftFootCrotchInput.x *= crotchMoveSpeedx;
+        leftFootCrotchInput.y *= crotchmovespeedy;
+
+        if(!leftFoot.atLimit) leftFootCrotchInput = Vector3.zero;
+        if(leftRaise) leftFootCrotchInput.y = .2f;
+
+
+        float rightFootLimitDot = Mathf.Clamp(Vector3.Dot(-rightFoot.directionToAnchor, leftFootInput), 0, 1);
+        Vector3 rightFootCrotchInput = leftFootInput * rightFootLimitDot;
+        rightFootCrotchInput.x *= crotchMoveSpeedx;
+        rightFootCrotchInput.y *= crotchmovespeedy;
+        if(!rightFoot.atLimit) rightFootCrotchInput = Vector3.zero;
+        if(rightRaise) rightFootCrotchInput.y = .2f;
+
+        crotchMovementInput =  leftFootCrotchInput + rightFootCrotchInput;
+        
         
         bool leftLower = leftStretchDown || leftTooTall;
         bool rightLower = rightStretchDown || rightTooTall;
@@ -183,6 +213,7 @@ public class FeetMovement : MonoBehaviour
         desiresLowerCrotch = leftLower || rightLower;
 
         crotchRotateInput = 0;
+
         if(leftRaise || rightStretchDown) crotchRotateInput -= 1;
         if(rightRaise || leftStretchDown) crotchRotateInput +=1;
     }

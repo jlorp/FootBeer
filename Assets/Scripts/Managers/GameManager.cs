@@ -14,6 +14,7 @@ public class GameManager : MonoBehaviour
     //Beer Drop
     public Rigidbody beer;
     public Vector3 initialAngularVelocity;
+    public ParticleSystem splashEffect;
 
     //Dialogue handling
     public TMP_Text playerText;
@@ -31,6 +32,13 @@ public class GameManager : MonoBehaviour
         beer.isKinematic = false;
         beer.angularVelocity = initialAngularVelocity;
         beer.velocity = Vector3.up * -2f;
+        StartCoroutine(PlaySplash(.4f));
+    }
+
+    IEnumerator PlaySplash(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        splashEffect.Play();
     }
 
     IEnumerator FadeFromBlack(float duration, float delay)

@@ -13,9 +13,10 @@ public class AudioManager : MonoBehaviour
         Instance = this;
     }
 
-    public void PlaySound(AudioClip sound, float impactMagnitude)
+    public void PlaySound(AudioClip sound, float impactMagnitude, float pitch)
     {
-        kick.volume= impactMagnitude;
+        kick.volume = impactMagnitude;
+        kick.pitch = pitch;
         kick.PlayOneShot(sound);
     }
 }

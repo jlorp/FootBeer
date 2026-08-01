@@ -33,7 +33,6 @@ public class FeetMovement : MonoBehaviour
 
     //Input
     Vector2 rightFootInput, leftFootInput;
-    bool desiresRaiseCrotch, desiresLowerCrotch;
 
     void Start()
     {
@@ -179,45 +178,24 @@ public class FeetMovement : MonoBehaviour
         //Crotch Raising
         bool leftRaise = leftFoot.OnGround && rightY < -0.3f && !leftFoot.atLimit;
         bool rightRaise = rightFoot.OnGround && leftY < -0.3f && !rightFoot.atLimit;
-        desiresRaiseCrotch = (leftRaise || rightRaise);
-
-        //Crotch Lowering
-        bool leftTooTall= leftFoot.OnGround && leftFoot.atLimit;
-        bool leftStretchDown= !leftFoot.OnGround && (rightY < 0 || rightX < 0 ) && leftFoot.atLimit;
-        bool rightTooTall= rightFoot.OnGround && rightFoot.atLimit;
-        bool rightStretchDown = !rightFoot.OnGround && (leftY < 0 || leftX > 0 ) && rightFoot.atLimit;
 
         //crotch move input
-        float crotchMoveSpeedx =.2f;
-        float crotchmovespeedy =.2f;
+        float crotchMoveSpeedLimit =.2f;
 
         float leftFootLimitDot = Mathf.Clamp(Vector3.Dot(-leftFoot.directionToAnchor, rightFootInput), 0, 1);
-        Vector3 leftFootCrotchInput = rightFootInput * leftFootLimitDot;
-        leftFootCrotchInput.x *= crotchMoveSpeedx;
-        leftFootCrotchInput.y *= crotchmovespeedy;
+        Vector3 leftFootCrotchInput = -leftFoot.directionToAnchor * leftFootLimitDot * crotchMoveSpeedLimit;
 
         if(!leftFoot.atLimit) leftFootCrotchInput = Vector3.zero;
-        if(leftRaise) leftFootCrotchInput.y = .2f;
+        if(leftRaise) leftFootCrotchInput = leftFoot.directionToAnchor * crotchMoveSpeedLimit * leftFootLimitDot;
 
 
         float rightFootLimitDot = Mathf.Clamp(Vector3.Dot(-rightFoot.directionToAnchor, leftFootInput), 0, 1);
-        Vector3 rightFootCrotchInput = leftFootInput * rightFootLimitDot;
-        rightFootCrotchInput.x *= crotchMoveSpeedx;
-        rightFootCrotchInput.y *= crotchmovespeedy;
+        Vector3 rightFootCrotchInput = -rightFoot.directionToAnchor * rightFootLimitDot * crotchMoveSpeedLimit;
+ 
         if(!rightFoot.atLimit) rightFootCrotchInput = Vector3.zero;
-        if(rightRaise) rightFootCrotchInput.y = .2f;
+        if(rightRaise) rightFootCrotchInput = rightFoot.directionToAnchor * crotchMoveSpeedLimit * rightFootLimitDot;
 
         crotchMovementInput =  leftFootCrotchInput + rightFootCrotchInput;
-        
-        
-        bool leftLower = leftStretchDown || leftTooTall;
-        bool rightLower = rightStretchDown || rightTooTall;
-
-        desiresLowerCrotch = leftLower || rightLower;
-
-        crotchRotateInput = 0;
-
-        if(leftRaise || rightStretchDown) crotchRotateInput -= 1;
-        if(rightRaise || leftStretchDown) crotchRotateInput +=1;
+        crotchRotateInput = (rightFootCrotchInput.y - leftFootCrotchInput.y) / crotchMoveSpeedLimit;
     }
 }

@@ -5,15 +5,22 @@ using UnityEngine;
 public class PlaySoundOnImpact : MonoBehaviour
 {
     public float velocityThreshold = 1.0f;
+    public float maxVolume;
+    public float volumeMultiplier = 1;
+
     public AudioClip[] ImpactSounds;
 
     private void OnCollisionEnter(Collision collision)
     {
-        Debug.Log(collision.relativeVelocity.magnitude);
-        if (collision.relativeVelocity.magnitude > velocityThreshold)
+        float collisionMagnitude = collision.relativeVelocity.magnitude;
+        if (collisionMagnitude > velocityThreshold)
         {
+            collisionMagnitude *= volumeMultiplier;
+            collisionMagnitude = Mathf.Clamp(collisionMagnitude,0,maxVolume);
+
             int sound = UnityEngine.Random.Range(0, ImpactSounds.Length);
-            AudioManager.Instance.PlaySound(ImpactSounds[sound],collision.relativeVelocity.magnitude);
+            float pitch = UnityEngine.Random.Range(.95f,1.05f);
+            AudioManager.Instance.PlaySound(ImpactSounds[sound],collisionMagnitude, pitch);
         }
     }
 }

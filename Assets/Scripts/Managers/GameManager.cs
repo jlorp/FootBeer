@@ -28,7 +28,7 @@ public class GameManager : MonoBehaviour
     void DropBeer()
     {
         StartCoroutine(AnimateWords("oh wait- fuck", .15f, 2.5f, 0f));
-        StartCoroutine(AnimateWords("God damnit", .5f, 2f, 4f));
+        StartCoroutine(AnimateWords("god damnit...", .5f, 2f, 4f));
         beer.isKinematic = false;
         beer.angularVelocity = initialAngularVelocity;
         beer.velocity = Vector3.up * -2f;

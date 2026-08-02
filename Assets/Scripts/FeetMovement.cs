@@ -19,6 +19,7 @@ public class FeetMovement : MonoBehaviour
 
     [Header("Crotch Movement")]
     Vector3 crotchMovementInput;
+    public float crotchFallspeed = .1f;
 
     [Header("Foot Rotation")]
     public Transform rFootBone;
@@ -95,7 +96,7 @@ public class FeetMovement : MonoBehaviour
         //add gravity if not grounded
         if(!grounded)
         {
-            crotchMovementInput +=(Vector3.up * -.15f);
+            crotchMovementInput +=(Vector3.up * -crotchFallspeed);
         }
         else if(crotchMovementInput.y == 0)
         {

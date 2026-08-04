@@ -184,17 +184,17 @@ public class FeetMovement : MonoBehaviour
         float crotchMoveSpeedLimit =.2f;
 
         float leftFootLimitDot = Mathf.Clamp(Vector3.Dot(-leftFoot.directionToAnchor, rightFootInput), 0, 1);
-        Vector3 leftFootCrotchInput = -leftFoot.directionToAnchor * leftFootLimitDot * crotchMoveSpeedLimit;
+        Vector3 leftFootCrotchInput = -leftFoot.directionToAnchor * leftFootLimitDot * crotchMoveSpeedLimit * 2f;
 
         if(!leftFoot.atLimit) leftFootCrotchInput = Vector3.zero;
-        if(leftRaise) leftFootCrotchInput = leftFoot.directionToAnchor * crotchMoveSpeedLimit * leftFootLimitDot;
+        if(leftRaise) leftFootCrotchInput = (leftFoot.directionToAnchor + (Vector3.up*.5f))* crotchMoveSpeedLimit;
 
 
         float rightFootLimitDot = Mathf.Clamp(Vector3.Dot(-rightFoot.directionToAnchor, leftFootInput), 0, 1);
-        Vector3 rightFootCrotchInput = -rightFoot.directionToAnchor * rightFootLimitDot * crotchMoveSpeedLimit;
+        Vector3 rightFootCrotchInput = -rightFoot.directionToAnchor * rightFootLimitDot * crotchMoveSpeedLimit  * 2f;
  
         if(!rightFoot.atLimit) rightFootCrotchInput = Vector3.zero;
-        if(rightRaise) rightFootCrotchInput = rightFoot.directionToAnchor * crotchMoveSpeedLimit * rightFootLimitDot;
+        if(rightRaise) rightFootCrotchInput = (rightFoot.directionToAnchor + Vector3.up*.5f) * crotchMoveSpeedLimit;
 
         crotchMovementInput =  leftFootCrotchInput + rightFootCrotchInput;
         crotchRotateInput = (rightFootCrotchInput.y - leftFootCrotchInput.y) / crotchMoveSpeedLimit;

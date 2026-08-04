@@ -31,8 +31,8 @@ public class GameManager : MonoBehaviour
 
     void DropBeer()
     {
-        StartCoroutine(AnimateWords("oh wait- fuck", .15f, 2.5f, 0f));
-        StartCoroutine(AnimateWords("god damnit", .3f, 2f, 4f));
+        PlayDialogue("oh wait- fuck", .15f, 2.5f, 0f);
+        PlayDialogue("god damnit", .3f, 2f, 4f);
         beer.isKinematic = false;
         beer.angularVelocity = initialAngularVelocity;
         beer.velocity = Vector3.up * -2f;
@@ -43,6 +43,11 @@ public class GameManager : MonoBehaviour
     {
         yield return new WaitForSeconds(delay);
         splashEffect.Play();
+    }
+
+    public void PlayDialogue(string requestedPhrase, float timeBetweenWords, float timeBeforeClear, float initialDelay)
+    {
+        StartCoroutine(AnimateWords(requestedPhrase, timeBetweenWords, timeBeforeClear, initialDelay));
     }
 
     IEnumerator FadeFromBlack(float duration, float delay)

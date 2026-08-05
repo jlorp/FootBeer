@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class ArmLogic : MonoBehaviour
 {
-    Vector3 startPosition, downPosition, handStartPosition;
-    public Transform armFinalPosition;
+    Vector3 handStartPosition;
+    public Transform armFinalPosition,armStartPosition;
 
     public bool canInRange;
 
@@ -41,9 +41,7 @@ public class ArmLogic : MonoBehaviour
 
     void Start()
     {
-        startPosition = transform.position;
-        downPosition = armFinalPosition.position;
-        startRotation = elbow.rotation;
+        startRotation = elbow.localRotation;
         upperArmStartRotation = transform.localRotation;
 
         forearmLength = (handPosition.localPosition.magnitude + forearmScaler.localPosition.magnitude);
@@ -116,7 +114,7 @@ public class ArmLogic : MonoBehaviour
         if(beercan.position.y > minCanGrabPosition) canInRange = true;
         if(beercan.position.y < maxCanGrabPosition) canInRange = false;
 
-        canInRange = true;
+        if(holdingBeer) canInRange = true;
     } 
 
     void RotationPingPong()
@@ -142,13 +140,13 @@ public class ArmLogic : MonoBehaviour
             Quaternion downRotation = lookRotation * Quaternion.Euler(Vector3.up * -rotationRange);
             targetRotation = Quaternion.Slerp(upRotation, downRotation, lerpPostion);
 
-            elbow.localRotation = Quaternion.Lerp(elbow.localRotation, targetRotation, Time.deltaTime * 4f);
         }
         else
         {
-            //targetRotation = startRotation;
-            //elbow.rotation = Quaternion.Lerp(elbow.rotation, targetRotation, Time.deltaTime * 4f);
+            targetRotation = startRotation;
         }
+
+        elbow.localRotation = Quaternion.Lerp(elbow.localRotation, targetRotation, Time.deltaTime * 4f);
     }
     
     void HandleWristMovement()
@@ -196,9 +194,9 @@ public class ArmLogic : MonoBehaviour
     void SetElbowPosition()
     {
         if(wristFired) return;
-        Vector3 targetPosition = canInRange ? downPosition : startPosition;
+        Vector3 targetPosition = canInRange ? armFinalPosition.position : armStartPosition.position;
         transform.position = Vector3.Lerp(transform.position, targetPosition, Time.deltaTime * 5f);
-        armInPosition = (Vector3.Distance(transform.position, downPosition)<.1f);
+        armInPosition = (Vector3.Distance(transform.position, armFinalPosition.position)<.1f);
     }
 
     float CosAngle(float a, float b, float c) 

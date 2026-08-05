@@ -31,7 +31,7 @@ public class GameManager : MonoBehaviour
 
     void DropBeer()
     {
-        PlayDialogue("oh wait- fuck", .15f, 2.5f, 0f);
+        PlayDialogue("oh wait - shoot", .15f, 2.5f, 0f);
         PlayDialogue("god damnit", .3f, 2f, 4f);
         beer.isKinematic = false;
         beer.angularVelocity = initialAngularVelocity;

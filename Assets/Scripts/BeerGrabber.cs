@@ -15,7 +15,7 @@ public class BeerGrabber : MonoBehaviour
             beer.transform.localRotation = Quaternion.identity;
             beer.transform.localPosition = Vector3.zero;
             _arm.holdingBeer=true;
-            GameManager.Instance.PlayDialogue("Y E S!", .15f, 2f, 0);
+            GameManager.Instance.PlayDialogue("YES!", .15f, 2f, 0);
         }
     }
 }

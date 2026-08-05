@@ -17,7 +17,7 @@ public class ArmLogic : MonoBehaviour
 
     bool wristFired = false;
     bool wristExtending, wristReturning;
-    public Transform elbow;
+    public Transform elbow,shoulder;
     public float armSpeed;
 
     public float minCanGrabPosition, maxCanGrabPosition;
@@ -26,7 +26,7 @@ public class ArmLogic : MonoBehaviour
     float armRotationTime = 0f;
 
     //solving IK
-    public float forearmLength, upperArmLength;
+    float forearmLength, upperArmLength;
     public Transform handPosition;
 
     float handToShoulderDistance;
@@ -46,12 +46,12 @@ public class ArmLogic : MonoBehaviour
         startRotation = elbow.rotation;
         upperArmStartRotation = transform.localRotation;
 
-        forearmLength = handPosition.localPosition.magnitude;
-        upperArmLength = elbow.localPosition.magnitude;
+        forearmLength = (handPosition.localPosition.magnitude + forearmScaler.localPosition.magnitude);
+        upperArmLength = (elbow.localPosition.magnitude + armScaler.localPosition.magnitude);
         handToShoulderDistance = Vector3.Distance(handPosition.position, transform.position);
 
-        elbowStartLocalPosition = elbow.localPosition;
-        handStartLocalPosition = handPosition.localPosition;
+        elbowStartLocalPosition = armScaler.localPosition;
+        handStartLocalPosition = forearmScaler.localPosition;
     }
 
     void Update()
@@ -79,11 +79,12 @@ public class ArmLogic : MonoBehaviour
         float upperArmStretch =  (upperArmLength + (amountOverClamp/2)) / upperArmLength;
         float upperArmSquash = 2-upperArmStretch;
 
-        armScaler.localScale = new Vector3(upperArmSquash, upperArmStretch, upperArmSquash);
-        forearmScaler.localScale = new Vector3(forearmSquash, forearmSquash, forearmStretch);
-        
-        elbow.localPosition = elbowStartLocalPosition - Vector3.up * (amountOverClamp/2);
-        handPosition.localPosition = handStartLocalPosition + Vector3.forward * (amountOverClamp/2);
+        //stretchy arm
+        //armScaler.localScale = new Vector3(upperArmSquash, upperArmStretch, upperArmSquash);
+        //forearmScaler.localScale = new Vector3(forearmSquash, forearmSquash, forearmStretch);
+       
+        armScaler.localPosition = elbowStartLocalPosition - Vector3.right * (amountOverClamp/2);
+        forearmScaler.localPosition = handStartLocalPosition - Vector3.right * (amountOverClamp/2);
 
         float a = handToShoulder;
         float b = forearmLength;
@@ -97,14 +98,15 @@ public class ArmLogic : MonoBehaviour
 
         float shoulderAngle = CosAngle(b,c,a);
 
-        elbow.localEulerAngles = new Vector3(elbowAngle - 90, 90 , 0 );
+        elbow.localEulerAngles = new Vector3(0, elbowAngle + 180, 0 );
 
-        Vector3 directionToHand = desiredHandPosition - transform.position;
+        Vector3 directionToHandGlobal = desiredHandPosition - transform.position;
+        Vector3 directionToHand = new Vector3(directionToHandGlobal.x, directionToHandGlobal.y, directionToHandGlobal.z);
         float shoulderToBeerAngle = Mathf.Atan2(directionToHand.y, directionToHand.x) * Mathf.Rad2Deg;
 
-        transform.localEulerAngles = new Vector3(0,0,- shoulderAngle + (shoulderToBeerAngle) + 90);
+        shoulder.localEulerAngles = new Vector3(0, shoulderAngle - (shoulderToBeerAngle) + 180, 0);
 
-        handPosition.rotation = handPositionTarget.rotation;
+        //handPosition.rotation = handPositionTarget.rotation;
     }
 
     void CheckCanPosition()
@@ -114,7 +116,7 @@ public class ArmLogic : MonoBehaviour
         if(beercan.position.y > minCanGrabPosition) canInRange = true;
         if(beercan.position.y < maxCanGrabPosition) canInRange = false;
 
-        //canInRange = true;
+        canInRange = true;
     } 
 
     void RotationPingPong()
@@ -129,17 +131,24 @@ public class ArmLogic : MonoBehaviour
             float lerpPostion = Mathf.PingPong(armRotationTime, rotationTime)/rotationTime;
             Vector3 directionToBeer = beercan.position - elbow.position;
             directionToBeer.z=0;
-            Quaternion lookRotation = Quaternion.LookRotation((directionToBeer).normalized , Vector3.right);
-            Quaternion upRotation = lookRotation * Quaternion.Euler(Vector3.right * rotationRange);
-            Quaternion downRotation = lookRotation * Quaternion.Euler(Vector3.right * -rotationRange);
+
+            //directionToBeer = Quaternion.Euler(0, 90, 0) * directionToBeer;
+
+            Quaternion lookRotation = Quaternion.Euler(0,-Vector3.SignedAngle(shoulder.right, directionToBeer, Vector3.forward) + 180,0);
+            
+
+
+            Quaternion upRotation = lookRotation * Quaternion.Euler(Vector3.up * rotationRange);
+            Quaternion downRotation = lookRotation * Quaternion.Euler(Vector3.up * -rotationRange);
             targetRotation = Quaternion.Slerp(upRotation, downRotation, lerpPostion);
+
+            elbow.localRotation = Quaternion.Lerp(elbow.localRotation, targetRotation, Time.deltaTime * 4f);
         }
         else
         {
-            targetRotation = startRotation;
+            //targetRotation = startRotation;
+            //elbow.rotation = Quaternion.Lerp(elbow.rotation, targetRotation, Time.deltaTime * 4f);
         }
-
-        elbow.rotation = Quaternion.Lerp(elbow.rotation, targetRotation, Time.deltaTime * 4f);
     }
     
     void HandleWristMovement()
@@ -148,10 +157,9 @@ public class ArmLogic : MonoBehaviour
 
         ExtendArm(handPositionTarget.position);
       
-
         if(wristExtending)
         {
-            handPositionTarget.position += handPositionTarget.forward * Time.deltaTime * armSpeed;
+            handPositionTarget.position -= handPositionTarget.right * Time.deltaTime * armSpeed;
             float armExtension = Vector3.Distance(handPositionTarget.position, handStartPosition);
             if(armExtension >= .5 || holdingBeer)
             {

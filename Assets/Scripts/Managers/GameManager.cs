@@ -20,7 +20,8 @@ public class GameManager : MonoBehaviour
     public TMP_Text playerText;
 
     //Arm
-    public ArmLogic arm;
+    public ArmLogic_Simplified arm;
+    public ArmLogic oldArm;
 
     void Start()
     {
@@ -72,7 +73,9 @@ public class GameManager : MonoBehaviour
     IEnumerator ActivateArm(float activateTime)
     {
         yield return new WaitForSeconds (activateTime);
-        arm.allowArmDrop = true;
+
+        if(arm) arm.allowArmDrop = true;
+        if(oldArm) oldArm.allowArmDrop = true;
     }
 
     IEnumerator AnimateWords(string sentance, float timeBetweenWords, float timeBeforeClear, float initialDelay)

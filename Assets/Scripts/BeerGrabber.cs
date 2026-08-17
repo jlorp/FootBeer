@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class BeerGrabber : MonoBehaviour
 {
-    public ArmLogic _arm;
+    public ArmLogic_Simplified _arm;
+    public ArmLogic oldArm;
 
     void OnTriggerEnter(Collider other) 
     {
@@ -14,7 +15,8 @@ public class BeerGrabber : MonoBehaviour
             beer.transform.SetParent(this.transform);
             beer.transform.localRotation = Quaternion.identity;
             beer.transform.localPosition = Vector3.zero;
-            _arm.holdingBeer=true;
+            if (_arm) _arm.holdingBeer=true;
+            if (oldArm) oldArm.holdingBeer = true;
             //GameManager.Instance.PlayDialogue("YES!", .15f, 2f, 0);
         }
     }

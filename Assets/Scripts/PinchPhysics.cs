@@ -13,7 +13,7 @@ public class PinchPhysics : MonoBehaviour
     {
         if(other.transform.TryGetComponent<Rigidbody>(out Rigidbody body))
         {
-            if(!bodies.Contains(body))
+            if(!bodies.Contains(body) && other.transform.TryGetComponent<FootCode>(out FootCode foot))
             {
                 bodies.Add(body);
             }

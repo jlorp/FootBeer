@@ -54,7 +54,6 @@ public class ArmLogic : MonoBehaviour
 
     void Update()
     {
-        //ExtendArm(handPositionTarget.position);
         CheckCanPosition();
         SetElbowPosition();
         RotationPingPong();
@@ -114,12 +113,15 @@ public class ArmLogic : MonoBehaviour
         if(beercan.position.y > minCanGrabPosition) canInRange = true;
         if(beercan.position.y < maxCanGrabPosition) canInRange = false;
 
-        if(holdingBeer) canInRange = true;
+        if(holdingBeer)
+        {
+            canInRange = wristFired;
+        } 
     } 
 
     void RotationPingPong()
     {
-        if(wristFired) return;
+        if(wristFired || holdingBeer) return;
 
         armRotationTime += Time.deltaTime;
 
@@ -195,7 +197,9 @@ public class ArmLogic : MonoBehaviour
     {
         if(wristFired) return;
         Vector3 targetPosition = canInRange ? armFinalPosition.position : armStartPosition.position;
-        transform.position = Vector3.Lerp(transform.position, targetPosition, Time.deltaTime * 5f);
+
+        float movespeed = canInRange ? 5f : 3f;
+        transform.position = Vector3.Lerp(transform.position, targetPosition, Time.deltaTime * movespeed);
         armInPosition = (Vector3.Distance(transform.position, armFinalPosition.position)<.1f);
     }
 

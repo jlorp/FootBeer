@@ -7,6 +7,8 @@ public class AudioManager : MonoBehaviour
     public static AudioManager Instance;
 
     public AudioSource kick;
+    public AudioSource lakeLoop;
+    public AudioSource windloop;
 
     void Start()
     {
@@ -18,5 +20,11 @@ public class AudioManager : MonoBehaviour
         kick.volume = impactMagnitude;
         kick.pitch = pitch;
         kick.PlayOneShot(sound);
+    }
+
+    public void ExitWater()
+    {
+        lakeLoop.volume = 0.1f;
+        windloop.volume = 0.75f;
     }
 }

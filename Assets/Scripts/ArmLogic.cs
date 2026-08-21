@@ -39,6 +39,8 @@ public class ArmLogic : MonoBehaviour
 
     [HideInInspector]public bool holdingBeer = false;
 
+    bool sceneActive = true;
+
     void Start()
     {
         startRotation = elbow.localRotation;
@@ -54,11 +56,27 @@ public class ArmLogic : MonoBehaviour
 
     void Update()
     {
+        if(!sceneActive) return;
+
+        if(holdingBeer)
+        {
+            Debug.Log(beercan.position.y);
+
+            if(beercan.position.y > 1.1) SwitchScene();
+        }
+
         CheckCanPosition();
         SetElbowPosition();
         RotationPingPong();
         if(Input.GetKeyDown(KeyCode.Space)) FireWrist();
         HandleWristMovement();
+    }
+
+    void SwitchScene()
+    {
+        sceneActive = false;
+        CameraManager.Instance.SwitchCamera(2);
+        AudioManager.Instance.ExitWater();
     }
 
     void ExtendArm(Vector3 desiredHandPosition)
@@ -200,6 +218,7 @@ public class ArmLogic : MonoBehaviour
 
         float movespeed = canInRange ? 5f : 3f;
         transform.position = Vector3.Lerp(transform.position, targetPosition, Time.deltaTime * movespeed);
+
         armInPosition = (Vector3.Distance(transform.position, armFinalPosition.position)<.1f);
     }
 

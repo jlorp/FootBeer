@@ -9,11 +9,15 @@ public class CameraManager : MonoBehaviour
     public Camera legCam;
     public Camera bellyCam;
 
+    public Camera activeCamera;
+
     int peakPriority = 1;
 
     void Start()
     {
+    
         Instance = this;
+        SwitchCamera(1);
     }
 
     void ShutOffCameras()
@@ -28,10 +32,12 @@ public class CameraManager : MonoBehaviour
         if(camera == 1)
         {
             legCam.gameObject.SetActive(true);
+            activeCamera=legCam;
         }
         else if(camera == 2)
         {
             bellyCam.gameObject.SetActive(true);
+            activeCamera = bellyCam;
         }
     }
 }

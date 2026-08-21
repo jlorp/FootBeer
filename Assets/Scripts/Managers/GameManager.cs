@@ -23,27 +23,54 @@ public class GameManager : MonoBehaviour
     public ArmLogic_Simplified arm;
     public ArmLogic oldArm;
 
+    //Belly_arm
+    public Transform beerHandTarget, beerHandStartPosition, beerHandEndPosition;
+    public AnimationCurve beerMovementcurve;
+
     void Start()
     {
         Instance = this;
         StartCoroutine(FadeFromBlack(5,1));
+        PlayDialogue("oh wait, shit", .15f, 2.5f, 5.75f);
         StartCoroutine(ActivateArm(10));
+    }
+
+    public void StartArmRaise()
+    {
+        StartCoroutine(LerpTransformPostion(1,beerHandTarget, beerHandStartPosition.position, beerHandEndPosition.position));
+    }
+
+    IEnumerator LerpTransformPostion(float duration, Transform _transform, Vector3 _startPosition, Vector3 _endPosition)
+    {
+        float elapsedTime = 0;
+        _transform.position = _startPosition;
+
+        while(elapsedTime < duration)
+        {
+            float t = elapsedTime / duration;
+            t = beerMovementcurve.Evaluate(t);
+
+            _transform.position = Vector3.Lerp(_startPosition, _endPosition, t);
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+        _transform.position = _endPosition;
     }
 
     void DropBeer()
     {
-        PlayDialogue("oh wait - shoot", .15f, 2.5f, 0f);
         PlayDialogue("god damnit", .3f, 2f, 4f);
         beer.isKinematic = false;
         beer.angularVelocity = initialAngularVelocity;
         beer.velocity = Vector3.up * -2f;
-        StartCoroutine(PlaySplash(.4f));
+        StartCoroutine(PlaySplash(.2f));
     }
 
     IEnumerator PlaySplash(float delay)
     {
         yield return new WaitForSeconds(delay);
         splashEffect.Play();
+        AudioManager.Instance.PlaySplash();
     }
 
     public void PlayDialogue(string requestedPhrase, float timeBetweenWords, float timeBeforeClear, float initialDelay)

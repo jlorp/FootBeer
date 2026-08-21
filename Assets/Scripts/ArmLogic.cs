@@ -62,7 +62,7 @@ public class ArmLogic : MonoBehaviour
         {
             Debug.Log(beercan.position.y);
 
-            if(beercan.position.y > 1.1) SwitchScene();
+            if(beercan.position.y > 1.05f) SwitchScene();
         }
 
         CheckCanPosition();
@@ -77,6 +77,7 @@ public class ArmLogic : MonoBehaviour
         sceneActive = false;
         CameraManager.Instance.SwitchCamera(2);
         AudioManager.Instance.ExitWater();
+        GameManager.Instance.StartArmRaise();
     }
 
     void ExtendArm(Vector3 desiredHandPosition)

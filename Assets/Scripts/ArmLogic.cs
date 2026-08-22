@@ -58,12 +58,7 @@ public class ArmLogic : MonoBehaviour
     {
         if(!sceneActive) return;
 
-        if(holdingBeer)
-        {
-            Debug.Log(beercan.position.y);
-
-            if(beercan.position.y > 1.05f) SwitchScene();
-        }
+        if(holdingBeer && beercan.position.y > 1.05f) SwitchScene();
 
         CheckCanPosition();
         SetElbowPosition();

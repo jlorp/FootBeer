@@ -26,6 +26,7 @@ public class GameManager : MonoBehaviour
     //Belly_arm
     public Transform beerHandTarget, beerHandStartPosition, beerHandEndPosition;
     public AnimationCurve beerMovementcurve;
+    public HandMover handLogic;
 
     void Start()
     {
@@ -55,6 +56,8 @@ public class GameManager : MonoBehaviour
             yield return null;
         }
         _transform.position = _endPosition;
+
+        handLogic.sceneActive = true;
     }
 
     void DropBeer()

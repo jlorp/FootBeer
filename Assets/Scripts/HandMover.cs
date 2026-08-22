@@ -5,11 +5,19 @@ using UnityEngine;
 public class HandMover : MonoBehaviour
 {
 
-    [Header("Feet Movement")]
+    [Header("Hand Movement")]
     public float acceleration;
     public float maxSpeed;
     public float dragNoInput;
     public Rigidbody rightHandRB, leftHandRB;
+
+    [Header("Finger Curl")]
+    public Transform fingerTipPosition;
+    public Transform tabPosition;
+    public float curlThreshold;
+    public float uncurlThreshold;
+    public Animator rHandAnimator;
+    bool curled = false;
 
     //Input
     Vector2 rightHandInput, leftHandInput;
@@ -26,6 +34,27 @@ public class HandMover : MonoBehaviour
     {
         if(!sceneActive)return;
         MoveHands();
+        UpdateCurl();
+    }
+
+    void UpdateCurl()
+    {
+        float tipDistance = fingerTipPosition.position.x - tabPosition.position.x;
+        
+        if(curled && tipDistance < uncurlThreshold) Uncurl();
+        if(!curled && tipDistance > curlThreshold) Curl();
+    }
+
+    void Curl()
+    {
+        curled = true;
+        rHandAnimator.SetBool("curled", true);
+    }
+
+    void Uncurl()
+    {
+        curled = false;
+        rHandAnimator.SetBool("curled", false);
     }
 
     void MoveHands()

@@ -9233,6 +9233,8 @@ MonoBehaviour:
   beerTapMask:
     serializedVersion: 2
     m_Bits: 256
+  beerDroppable: {fileID: 8663043781777657845, guid: 361fd47985f5ee645990989ea0301cc7,
+    type: 3}
   sceneActive: 0
 --- !u!1 &1273182873
 GameObject:
@@ -33886,6 +33888,11 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 8
       objectReference: {fileID: 0}
+    - target: {fileID: 3009336366338031949, guid: 0102ec671be1e584db766d43bd40cd9f,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3337135311690853514, guid: 0102ec671be1e584db766d43bd40cd9f,
         type: 3}
       propertyPath: m_Constraints
@@ -35816,7 +35823,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2664058176422170393}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.0031582261, y: -0.0063995635, z: 0.38476583, w: -0.9229867}
+  m_LocalRotation: {x: -0.003158256, y: -0.006399586, z: 0.38476583, w: -0.9229867}
   m_LocalPosition: {x: -0.41871622, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0

@@ -43,6 +43,7 @@ public class HandMover : MonoBehaviour
     [Header("Beer Tap/Drop")]
     public float tapCastDistance;
     public LayerMask beerTapMask;
+    public GameObject beerDroppable;
 
     //Input
     Vector2 rightHandInput, leftHandInput;
@@ -72,7 +73,7 @@ public class HandMover : MonoBehaviour
         if(!sceneActive) return;
 
         UpdateInputs();
-        if(Input.GetKeyDown(KeyCode.Alpha4)) GrabTab();
+        //if(Input.GetKeyDown(KeyCode.Alpha4)) GrabTab();
         VibrateCan();
         PullTab();
 
@@ -122,12 +123,27 @@ public class HandMover : MonoBehaviour
 
         if (Physics.SphereCast(fingerTipPosition.position, 0.05f, castDirection, out hit, tapCastDistance, beerTapMask))
         {
-            Vector3 handDirection = (fingerTipPosition.position - beerCan.position).normalized;
-            leftHandRB.velocity = -maxSpeed * handDirection * 1.5f;
-            rightHandRB.velocity = maxSpeed * handDirection * 1.5f;
+            OnPoke(true);
         }
     }
     
+    void OnPoke(bool dropOnPoke)
+    {
+        Vector3 handDirection = (fingerTipPosition.position - beerCan.position).normalized;
+        leftHandRB.velocity = -maxSpeed * handDirection * 2f;
+        rightHandRB.velocity = maxSpeed * handDirection * 2f;
+
+        if(dropOnPoke) DropBeer(handDirection);
+    }
+
+    void DropBeer(Vector3 _handDirection)
+    {
+        beerCan.gameObject.SetActive(false);
+        var droppedBeer = Instantiate(beerDroppable, beerCan.position, beerCan.rotation);
+        DroppableBeer _beer = droppedBeer.GetComponent<DroppableBeer>();
+        _beer.SetAngularVelocity(_handDirection);
+    }
+
     void PullTab()
     {
         if(!pullingTab || canOpen) return;
@@ -145,7 +161,7 @@ public class HandMover : MonoBehaviour
         canOpen = true;
         DropTab();
         Uncurl();
-        rightHandRB.velocity = Vector3.right * -2f;
+        rightHandRB.velocity = Vector3.right * -4f;
         leftHandRB.velocity = Vector3.right * 1f;
     }
 
@@ -259,7 +275,7 @@ public class HandMover : MonoBehaviour
         bool inCurlYRange =  tipDistanceY < curlYMinimum;
         bool inUncurlYrange = tipDistanceY > curlYMaximum;
 
-        bool inGrabXRange = tipDistance > .15f && tipDistance < .35f;
+        bool inGrabXRange = tipDistance > .05f && tipDistance < .35f;
         
 
         if(!curled && (inCurlYRange)) Curl();

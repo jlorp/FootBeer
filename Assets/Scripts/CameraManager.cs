@@ -11,12 +11,12 @@ public class CameraManager : MonoBehaviour
 
     public Camera activeCamera;
 
-    int peakPriority = 1;
+    int currentCamera;
 
     void Start()
     {
         Instance = this;
-        SwitchCamera(1);
+        SwitchCamera(1, false);
     }
 
     void ShutOffCameras()
@@ -25,18 +25,52 @@ public class CameraManager : MonoBehaviour
         bellyCam.gameObject.SetActive(false);
     }
 
-    public void SwitchCamera(int camera)
+    public void SwitchCamera(int camera, bool reset)
     {
         ShutOffCameras();
+        if(currentCamera == 2) OnExitScene2();
+
         if(camera == 1)
         {
             legCam.gameObject.SetActive(true);
             activeCamera=legCam;
+            if(reset) ResetScene1();
         }
         else if(camera == 2)
         {
             bellyCam.gameObject.SetActive(true);
             activeCamera = bellyCam;
+            if(reset) ResetScene2();
         }
+        currentCamera = camera;
+    }
+
+    void OnExitScene2()
+    {
+        GameManager.Instance.handMover.sceneActive = false;
+    }
+
+    void ResetScene1()
+    {
+        //drop beer/reset beer position
+        GameManager.Instance.DropBeer();
+
+        //reset arm
+        ArmLogic _arm = GameManager.Instance.oldArm;
+        _arm.holdingBeer = false;
+        _arm.sceneActive = true;
+        _arm.allowArmDrop = false;
+        _arm.ForceArmUp();
+        GameManager.Instance.StartArmDrop(5);
+
+        //reset feet + crotch position/velocity
+
+    }
+
+    void ResetScene2()
+    {
+        //reset hand position/pose
+        GameManager.Instance.handMover.ResetHandScene();
+        //turn on beer art
     }
 }

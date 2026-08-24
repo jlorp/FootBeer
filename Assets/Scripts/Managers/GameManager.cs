@@ -15,18 +15,23 @@ public class GameManager : MonoBehaviour
     public Rigidbody beer;
     public Vector3 initialAngularVelocity;
     public ParticleSystem splashEffect;
+    Vector3 beerStartPosition;
+    Transform beerInitialParent;
+    Quaternion beerStartRotation;
 
     //Dialogue handling
     public TMP_Text playerText;
 
     //Arm
-    public ArmLogic_Simplified arm;
     public ArmLogic oldArm;
 
     //Belly_arm
     public Transform beerHandTarget, beerHandStartPosition, beerHandEndPosition;
     public AnimationCurve beerMovementcurve;
     public HandMover handLogic;
+    public Beer beerCode;
+
+    public HandMover handMover;
 
     void Start()
     {
@@ -34,6 +39,9 @@ public class GameManager : MonoBehaviour
         StartCoroutine(FadeFromBlack(5,1));
         PlayDialogue("oh wait, shit", .15f, 2.5f, 5.75f);
         StartCoroutine(ActivateArm(10));
+        beerStartPosition = beer.transform.position;
+        beerInitialParent = beer.transform.parent;
+        beerStartRotation = beer.transform.rotation;
     }
 
     public void StartArmRaise()
@@ -60,10 +68,14 @@ public class GameManager : MonoBehaviour
         handLogic.sceneActive = true;
     }
 
-    void DropBeer()
+    public void DropBeer()
     {
-        PlayDialogue("god damnit", .3f, 2f, 4f);
-        beer.isKinematic = false;
+        beerCode.OnDrop();
+        beer.transform.position = beerStartPosition;
+        beer.transform.rotation = beerStartRotation;
+        beer.transform.SetParent(beerInitialParent);
+
+
         beer.angularVelocity = initialAngularVelocity;
         beer.velocity = Vector3.up * -2f;
         StartCoroutine(PlaySplash(.2f));
@@ -98,14 +110,19 @@ public class GameManager : MonoBehaviour
 
         fadeImage.color = new Color(0.0f, 0.0f, 0.0f, 0);
         DropBeer();
+        PlayDialogue("god damnit", .3f, 2f, 4f);
     }
 
     IEnumerator ActivateArm(float activateTime)
     {
         yield return new WaitForSeconds (activateTime);
 
-        if(arm) arm.allowArmDrop = true;
         if(oldArm) oldArm.allowArmDrop = true;
+    }
+
+    public void StartArmDrop(float delay)
+    {
+        StartCoroutine(ActivateArm(delay));
     }
 
     IEnumerator AnimateWords(string sentance, float timeBetweenWords, float timeBeforeClear, float initialDelay)

@@ -39,8 +39,8 @@ public class ArmLogic : MonoBehaviour
 
     [HideInInspector]public bool holdingBeer = false;
 
-    bool sceneActive = true;
-
+    [HideInInspector] public bool sceneActive = true;
+    
     void Start()
     {
         startRotation = elbow.localRotation;
@@ -71,11 +71,16 @@ public class ArmLogic : MonoBehaviour
     void SwitchScene()
     {
         sceneActive = false;
-        CameraManager.Instance.SwitchCamera(2);
+        CameraManager.Instance.SwitchCamera(2,true);
         AudioManager.Instance.ExitWater();
         GameManager.Instance.StartArmRaise();
     }
 
+    public void ForceArmUp()
+    {
+        transform.position = armStartPosition.position;
+    }
+    
     void ExtendArm(Vector3 desiredHandPosition)
     {
         

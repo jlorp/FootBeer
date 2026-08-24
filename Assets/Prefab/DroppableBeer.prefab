@@ -348,6 +348,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e4425aacd576c824387f55505b9cdec1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gravity: -10
+  gravity: -15
   body: {fileID: 1399500771063434380}
+  handDirection: {x: 0, y: 0, z: 0}
+  sceneChangeHeightThreshold: 0.5
   initialYVelociy: 2

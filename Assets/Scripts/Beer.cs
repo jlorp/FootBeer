@@ -13,6 +13,14 @@ public class Beer : MonoBehaviour
     {
         body = GetComponent<Rigidbody>();
     }
+    public void OnDrop()
+    {
+        body.isKinematic = false;
+        collider.enabled = true;
+        collider2.enabled = true;
+        isGrabbed = false;
+    }
+
     public void OnGrab()
     {
         body.isKinematic = true;

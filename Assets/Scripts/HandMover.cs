@@ -15,7 +15,7 @@ public class HandMover : MonoBehaviour
     public Transform tabPosition;
     public float curlThreshold;
     public float uncurlThreshold;
-    public Animator rHandAnimator;
+    public Animator rHandAnimator,lHandAnimator;
     bool curled = false;
 
     [Header("Tab Grab")]
@@ -44,6 +44,7 @@ public class HandMover : MonoBehaviour
     public float tapCastDistance;
     public LayerMask beerTapMask;
     public GameObject beerDroppable;
+    bool beerDropped = false;
 
     //Input
     Vector2 rightHandInput, leftHandInput;
@@ -53,6 +54,7 @@ public class HandMover : MonoBehaviour
     float rTargetHeight;
 
     public bool sceneActive;
+    Vector3 rHandStartPosition;
 
     void Start()
     {
@@ -62,10 +64,13 @@ public class HandMover : MonoBehaviour
         originalRightHandParent = rHandTargetTransform.parent;
         originalRightHandRotation = rHandTargetTransform.localRotation;
         tabStartPosition = cantab.localPosition;
+        lHandAnimator.SetBool("holdBeer", true);
 
         pokeHeight= rHandTargetTransform.position.y;
         curlHeight = pokeHeight + 0.3f;
         rTargetHeight = pokeHeight;
+
+        rHandStartPosition=rightHandRB.transform.position;
     }
 
     void Update()
@@ -130,14 +135,16 @@ public class HandMover : MonoBehaviour
     void OnPoke(bool dropOnPoke)
     {
         Vector3 handDirection = (fingerTipPosition.position - beerCan.position).normalized;
-        leftHandRB.velocity = -maxSpeed * handDirection * 2f;
-        rightHandRB.velocity = maxSpeed * handDirection * 2f;
+        leftHandRB.velocity = -maxSpeed * handDirection * 3f;
+        rightHandRB.velocity = maxSpeed * handDirection * 3f;
 
         if(dropOnPoke) DropBeer(handDirection);
     }
 
     void DropBeer(Vector3 _handDirection)
     {
+        beerDropped =true;
+        lHandAnimator.SetBool("open", true);
         beerCan.gameObject.SetActive(false);
         var droppedBeer = Instantiate(beerDroppable, beerCan.position, beerCan.rotation);
         DroppableBeer _beer = droppedBeer.GetComponent<DroppableBeer>();
@@ -262,7 +269,7 @@ public class HandMover : MonoBehaviour
 
     void UpdateCurl()
     {
-        if(tabGrabbed || canOpen) return;
+        if(tabGrabbed || canOpen || beerDropped) return;
 
         float tipDistance = fingerTipPosition.position.x - tabPosition.position.x;
         float tipDistanceY = fingerTipPosition.position.z - tabPosition.position.z;
@@ -338,5 +345,13 @@ public class HandMover : MonoBehaviour
                 framesPullingTab = 0;
             }
         } 
+    }
+
+    public void ResetHandScene()
+    {
+        lHandAnimator.SetBool("holdBeer", true);
+        lHandAnimator.SetBool("open", false);
+        beerCan.gameObject.SetActive(true);
+        rightHandRB.transform.position = rHandStartPosition;
     }
 }

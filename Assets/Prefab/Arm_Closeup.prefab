@@ -515,8 +515,61 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 2488414543102745591}
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: b1972b20acba1dc4983f66e80c012fa9,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4620255788238120399}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: b1972b20acba1dc4983f66e80c012fa9,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1169532456997122084}
   m_SourcePrefab: {fileID: 100100000, guid: b1972b20acba1dc4983f66e80c012fa9, type: 3}
+--- !u!1 &1618643730505718495 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: b1972b20acba1dc4983f66e80c012fa9,
+    type: 3}
+  m_PrefabInstance: {fileID: 1925282469028423566}
+  m_PrefabAsset: {fileID: 0}
+--- !u!95 &4620255788238120399
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1618643730505718495}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: e627aea996122344a87c8592dd523849, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
+--- !u!111 &1169532456997122084
+Animation:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1618643730505718495}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Animation: {fileID: 0}
+  m_Animations:
+  - {fileID: 7400000, guid: 9e9f67e824167c548a560973ff6c0f85, type: 2}
+  - {fileID: 7400000, guid: b0e4d426dff0c6b4ab77f75ff8d36e65, type: 2}
+  - {fileID: 7400000, guid: 1b38c269bb25d4145a2c626264a1aa03, type: 2}
+  m_WrapMode: 0
+  m_PlayAutomatically: 1
+  m_AnimatePhysics: 0
+  m_CullingType: 0
 --- !u!4 &2106914181558337637 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: b1972b20acba1dc4983f66e80c012fa9,

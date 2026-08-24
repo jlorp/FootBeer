@@ -28,19 +28,28 @@ public class HandMover : MonoBehaviour
     public Transform canVibratePoint;
     public Transform canTabTip;
     public Transform beerCan;
+    public float tabMinRotate, tabMaxRotate, tabOpenRotate;
+    public float canOpenTime, maxVibrateIntensity;
+    public AnimationCurve TabWiggle;
+    public ParticleSystem canExplodeParticle;
 
     Transform rHandTargetTransform, originalRightHandParent;
     Quaternion originalRightHandRotation;
 
-
-    public float canOpenTime, maxVibrateIntensity;
     bool canOpen = false;
     float tabTipStartPositionZ, parentPositionZ;
+    Vector3 tabStartPosition;
+
+    [Header("Beer Tap/Drop")]
+    public float tapCastDistance;
+    public LayerMask beerTapMask;
 
     //Input
     Vector2 rightHandInput, leftHandInput;
     bool pullingTab;
     float framesPullingTab;
+    float curlHeight, pokeHeight;
+    float rTargetHeight;
 
     public bool sceneActive;
 
@@ -51,6 +60,11 @@ public class HandMover : MonoBehaviour
         rHandTargetTransform = rightHandRB.transform;
         originalRightHandParent = rHandTargetTransform.parent;
         originalRightHandRotation = rHandTargetTransform.localRotation;
+        tabStartPosition = cantab.localPosition;
+
+        pokeHeight= rHandTargetTransform.position.y;
+        curlHeight = pokeHeight + 0.3f;
+        rTargetHeight = pokeHeight;
     }
 
     void Update()
@@ -60,16 +74,28 @@ public class HandMover : MonoBehaviour
         UpdateInputs();
         if(Input.GetKeyDown(KeyCode.Alpha4)) GrabTab();
         VibrateCan();
+        PullTab();
+
         if(framesPullingTab > canOpenTime) OpenCan();
+        
         UpdateFingerPosition();
     }
 
     void FixedUpdate()
     {
         if(!sceneActive)return;
+        BeerTapCast();
 
         MoveHands();
         UpdateCurl();   
+        AdjustRightHandHeight();
+    }
+
+    void AdjustRightHandHeight()
+    {
+        if(tabGrabbed || canOpen) return;
+        if(rHandTargetTransform.position.y == rTargetHeight) return;
+        rHandTargetTransform.position =  new Vector3(rHandTargetTransform.position.x, rTargetHeight, rHandTargetTransform.position.z);
     }
 
     void UpdateFingerPosition() 
@@ -81,17 +107,46 @@ public class HandMover : MonoBehaviour
         tabGrabTargetPosition.z = parentPositionZ + tabOffset;
         tabGrabParent.localPosition = tabGrabTargetPosition;
     }
+
+    void BeerTapCast()
+    {
+        if(tabGrabbed || curled || canOpen) return;
+
+        RaycastHit hit; 
+        //senses beer during point phase to knock over
+        
+        Vector3 castDirection = rightHandRB.velocity.normalized;
+        if(castDirection.magnitude < .1f) castDirection = -fingerTipPosition.right;
+
+        Debug.DrawRay(fingerTipPosition.position, castDirection * tapCastDistance, Color.red);
+
+        if (Physics.SphereCast(fingerTipPosition.position, 0.05f, castDirection, out hit, tapCastDistance, beerTapMask))
+        {
+            Vector3 handDirection = (fingerTipPosition.position - beerCan.position).normalized;
+            leftHandRB.velocity = -maxSpeed * handDirection * 1.5f;
+            rightHandRB.velocity = maxSpeed * handDirection * 1.5f;
+        }
+    }
+    
+    void PullTab()
+    {
+        if(!pullingTab || canOpen) return;
+        float pullPercent = framesPullingTab/canOpenTime;
+        float tabRotationCurrent = Mathf.Lerp(tabMinRotate, tabMaxRotate, pullPercent);
+        cantab.localRotation = Quaternion.Euler(tabRotationCurrent,0,0);
+    }
+
     void OpenCan()
     {
         if(canOpen) return;
+        StartCoroutine(OpenCanAnimation(.3f));
+        
 
-        cantab.localRotation = Quaternion.Euler(60f,0,0);
-        canMouthPiece.localRotation = Quaternion.Euler(100f,0,0);
         canOpen = true;
         DropTab();
         Uncurl();
         rightHandRB.velocity = Vector3.right * -2f;
-        leftHandRB.velocity = Vector3.right * 2f;
+        leftHandRB.velocity = Vector3.right * 1f;
     }
 
     void VibrateCan()
@@ -99,51 +154,80 @@ public class HandMover : MonoBehaviour
         if(!pullingTab || canOpen)
         {
             canVibratePoint.localPosition = Vector3.zero;
+            cantab.localPosition = tabStartPosition;
             return;
         } 
 
-        float speed = 5.0f;
+        float speed = 10.0f;
         
         float intensity = Mathf.Clamp(framesPullingTab/canOpenTime,0,1);
         intensity = Mathf.Lerp(0, maxVibrateIntensity, intensity);
-
-        canVibratePoint.localPosition = intensity * new Vector3(
+        Vector3 scrollingNoise = new Vector3(
             Mathf.PerlinNoise(speed * Time.time, 1),
             Mathf.PerlinNoise(speed * Time.time, 2),
             Mathf.PerlinNoise(speed * Time.time, 3));
-  
+
+        cantab.localPosition = tabStartPosition + (intensity * 0.05f * scrollingNoise);
+        canVibratePoint.localPosition = intensity * scrollingNoise;
     }
 
     IEnumerator LerpLocalPostion(float duration, Transform _transform, Vector3 _endPosition)
     {
         float elapsedTime = 0;
         Vector3 _startPosition = _transform.localPosition;
+        Quaternion _startRotation = _transform.localRotation;
 
-        while(elapsedTime < duration)
+        while(elapsedTime < duration && tabGrabbed)
         {
             float t = elapsedTime / duration;
 
             _transform.localPosition = Vector3.Lerp(_startPosition, _endPosition, t);
+            _transform.localRotation= Quaternion.Lerp(_startRotation, Quaternion.identity, t);
             elapsedTime += Time.deltaTime;
             yield return null;
         }
 
-        _transform.localPosition = _endPosition;
+        if(tabGrabbed)
+        {
+            _transform.localPosition = _endPosition;
+            _transform.localRotation = Quaternion.identity;
+        }
+    }
+
+    IEnumerator OpenCanAnimation(float duration)
+    {
+        float elapsedTime = 0;
+        Quaternion startRotTab = cantab.localRotation;
+        Quaternion targetRotTab = Quaternion.Euler(tabOpenRotate,0,0);
+
+        canMouthPiece.localRotation = Quaternion.Euler(100f,0,0);
+        AudioManager.Instance.PlaySound(AudioManager.Instance.canOpenSound, 0.4f, 1.0f, canMouthPiece.position);
+
+        while(elapsedTime < duration)
+        {
+            float t = elapsedTime / duration;
+            float tAnimated = TabWiggle.Evaluate(t);
+            cantab.localRotation = Quaternion.Lerp(startRotTab,targetRotTab, tAnimated);
+            elapsedTime += Time.deltaTime;
+
+            yield return null;
+        }
+        canExplodeParticle.Play();
     }
 
     void GrabTab()
     {
         if(tabGrabbed) return;
         if(canOpen) return;
+        if(rightHandInput.x > 0) return;
 
         tabGrabbed = true;
-        rightHandRB.velocity = Vector3.zero;
         rightHandRB.transform.SetParent(tabGrabParent);
-        rightHandRB.transform.localRotation= Quaternion.identity;
-        StartCoroutine(LerpLocalPostion(0.2f, rightHandRB.transform,Vector3.zero));
+        
+        StartCoroutine(LerpLocalPostion(0.1f, rightHandRB.transform,Vector3.zero));
         rightConstraint.rotationSpeed = 100;
 
-        cantab.localRotation = Quaternion.Euler(22.5f,0,0);
+        cantab.localRotation = Quaternion.Euler(tabMinRotate,0,0);
         Destroy(rightHandRB);
     }
 
@@ -162,34 +246,40 @@ public class HandMover : MonoBehaviour
 
     void UpdateCurl()
     {
-        if(tabGrabbed) return;
+        if(tabGrabbed || canOpen) return;
 
         float tipDistance = fingerTipPosition.position.x - tabPosition.position.x;
         float tipDistanceY = fingerTipPosition.position.z - tabPosition.position.z;
 
-        float curlYMinimum = -2f;
-        float curlYMaximum = 0;
+        float curlYMinimum = -0.35f;
+        float curlYMaximum = -.2f;
 
         bool inCurlXRange = tipDistance > curlThreshold;
         bool inUncurlXRange = tipDistance < uncurlThreshold;
-        bool inCurlYRange = tipDistanceY > curlYMinimum && tipDistanceY < curlYMaximum;
+        bool inCurlYRange =  tipDistanceY < curlYMinimum;
+        bool inUncurlYrange = tipDistanceY > curlYMaximum;
 
-        if(curled && (inUncurlXRange || !inCurlYRange)) Uncurl();
-        if(!curled && (inCurlXRange && inCurlYRange)) Curl();
+        bool inGrabXRange = tipDistance > .15f && tipDistance < .35f;
+        
 
-        if(curled && tipDistanceY > -.25f) GrabTab();
+        if(!curled && (inCurlYRange)) Curl();
+        if(curled && (inUncurlYrange && inUncurlXRange)) Uncurl();
+
+        if(curled && tipDistanceY > -.25f && inGrabXRange) GrabTab();
     }
 
     void Curl()
     {
         curled = true;
         rHandAnimator.SetBool("curled", true);
+        rTargetHeight = curlHeight;
     }
 
     void Uncurl()
     {
         curled = false;
         rHandAnimator.SetBool("curled", false);
+        rTargetHeight = pokeHeight;
     }
 
     void MoveHands()
@@ -218,6 +308,8 @@ public class HandMover : MonoBehaviour
         {
             leftHandInput = (leftHandInput * 0.5f + rightHandInput * 0.5f);
             leftHandInput = Vector2.ClampMagnitude(leftHandInput,1f);
+
+            if(rightHandInput.y < 0 || rightHandInput.x > 0) DropTab();
 
             pullingTab = (rightX < 0 && leftX > 0);
 

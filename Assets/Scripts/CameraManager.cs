@@ -15,7 +15,6 @@ public class CameraManager : MonoBehaviour
 
     void Start()
     {
-    
         Instance = this;
         SwitchCamera(1);
     }

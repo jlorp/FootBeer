@@ -11,6 +11,7 @@ public class AudioManager : MonoBehaviour
     public AudioSource windloop;
 
     public AudioClip splashSound;
+    public AudioClip canOpenSound;
 
     void Start()
     {
@@ -24,12 +25,19 @@ public class AudioManager : MonoBehaviour
         kick.PlayOneShot(splashSound);
     }
 
-    public void PlaySound(AudioClip sound, float impactMagnitude, float pitch, float stereoPosition)
+    public void PlaySound(AudioClip _sound, float _volume, float _pitch, Vector3 _worldPosition)
     {
-        kick.volume = impactMagnitude;
-        kick.pitch = pitch;
-        kick.panStereo= stereoPosition;
-        kick.PlayOneShot(sound);
+        kick.volume = _volume;
+        kick.pitch = _pitch;
+        kick.panStereo= GetStereoPosition(_worldPosition);
+        kick.PlayOneShot(_sound);
+    }
+
+    float GetStereoPosition(Vector3 _worldPosition)
+    {
+        float screenPositionX = CameraManager.Instance.activeCamera.WorldToViewportPoint(_worldPosition).x;
+        screenPositionX = (screenPositionX * 2) -1;
+        return screenPositionX;
     }
 
     public void ExitWater()

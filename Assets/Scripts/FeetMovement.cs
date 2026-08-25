@@ -35,20 +35,31 @@ public class FeetMovement : MonoBehaviour
     //Input
     Vector2 rightFootInput, leftFootInput;
 
+    //reset
+    Vector3 rFootStartPosition, lFootStartPosition, crotchStartPosition;
+
+    public bool sceneActive = true;
+
     void Start()
     {
         lFootIdleRot = lFootBone.localEulerAngles;
         rFootIdleRot = rFootBone.localEulerAngles;
+        
+        lFootStartPosition = leftFootRB.transform.position;
+        rFootStartPosition = rightFootRB.transform.position;
+        crotchStartPosition = crotchRB.transform.position;
     }
 
     void Update()
     {
+        if(!sceneActive) return;
         UpdateInputs();
         RotateFeet(5f);
     }
 
     void FixedUpdate()
     {
+        if(!sceneActive) return;
         MoveFeet();
         RotateCrotch(5f, 2f);
         UpdateGrounded();
@@ -198,5 +209,14 @@ public class FeetMovement : MonoBehaviour
 
         crotchMovementInput =  leftFootCrotchInput + rightFootCrotchInput;
         crotchRotateInput = (rightFootCrotchInput.y - leftFootCrotchInput.y) / crotchMoveSpeedLimit;
+    }
+
+    public void ResetPlayerPosition()
+    {
+        leftFootRB.MovePosition(lFootStartPosition);
+        rightFootRB.MovePosition(rFootStartPosition);
+        crotchRB.MovePosition(crotchStartPosition);
+
+        leftFootRB.velocity = rightFootRB.velocity = crotchRB.velocity = Vector3.zero;
     }
 }

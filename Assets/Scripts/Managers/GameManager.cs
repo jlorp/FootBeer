@@ -32,6 +32,7 @@ public class GameManager : MonoBehaviour
     public Beer beerCode;
 
     public HandMover handMover;
+    public FeetMovement feetMovement;
 
     void Start()
     {

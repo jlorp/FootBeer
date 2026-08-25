@@ -285,8 +285,9 @@ public class HandMover : MonoBehaviour
         bool inGrabXRange = tipDistance > .05f && tipDistance < .35f;
         
 
-        if(!curled && (inCurlYRange)) Curl();
-        if(curled && (inUncurlYrange && inUncurlXRange)) Uncurl();
+        if(!curled && (inCurlYRange && inCurlXRange)) Curl();
+
+        if(curled && (inUncurlXRange)) Uncurl();
 
         if(curled && tipDistanceY > -.25f && inGrabXRange) GrabTab();
     }
@@ -353,5 +354,6 @@ public class HandMover : MonoBehaviour
         lHandAnimator.SetBool("open", false);
         beerCan.gameObject.SetActive(true);
         rightHandRB.transform.position = rHandStartPosition;
+        beerDropped = false;
     }
 }

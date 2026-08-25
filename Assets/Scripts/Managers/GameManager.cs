@@ -37,12 +37,25 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         Instance = this;
-        StartCoroutine(FadeFromBlack(5,1));
-        PlayDialogue("oh wait, shit", .15f, 2.5f, 5.75f);
-        StartCoroutine(ActivateArm(10));
         beerStartPosition = beer.transform.position;
         beerInitialParent = beer.transform.parent;
         beerStartRotation = beer.transform.rotation;
+        StartCoroutine(FadeFromBlack(5,1));
+    }
+
+    public void EndBubbleScene()
+    {
+        StartCoroutine(GameStartStuff(2));
+    }
+
+    IEnumerator GameStartStuff(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+
+        PlayDialogue("oh wait, shit", .15f, 2.5f, 0);
+        StartCoroutine(ActivateArm(10));
+        DropBeer();
+        PlayDialogue("god damnit", .3f, 2f, 4f);
     }
 
     public void StartArmRaise()
@@ -110,8 +123,6 @@ public class GameManager : MonoBehaviour
         }
 
         fadeImage.color = new Color(0.0f, 0.0f, 0.0f, 0);
-        DropBeer();
-        PlayDialogue("god damnit", .3f, 2f, 4f);
     }
 
     IEnumerator ActivateArm(float activateTime)

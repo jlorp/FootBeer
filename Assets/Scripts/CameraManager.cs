@@ -11,6 +11,8 @@ public class CameraManager : MonoBehaviour
 
     public Camera activeCamera;
 
+    public GameObject BellySceneLights,LegSceneLights;
+
     int currentCamera;
 
     void Start()
@@ -53,6 +55,8 @@ public class CameraManager : MonoBehaviour
     {
         GameManager.Instance.handMover.sceneActive = false;
         AudioManager.Instance.EnterWater();
+        BellySceneLights.SetActive(false);
+        LegSceneLights.SetActive(true);
     }
 
     void OnExitScene1()
@@ -60,6 +64,8 @@ public class CameraManager : MonoBehaviour
         GameManager.Instance.feetMovement.sceneActive = false;
         //reset feet + crotch position/velocity
         GameManager.Instance.feetMovement.ResetPlayerPosition();
+        BellySceneLights.SetActive(true);
+        LegSceneLights.SetActive(false);
     }
 
     void ResetScene1()

@@ -67,6 +67,7 @@ public class GameManager : MonoBehaviour
     {
         float elapsedTime = 0;
         _transform.position = _startPosition;
+        handMover.leftHandRB.interpolation = RigidbodyInterpolation.None;
 
         while(elapsedTime < duration)
         {
@@ -77,8 +78,9 @@ public class GameManager : MonoBehaviour
             elapsedTime += Time.deltaTime;
             yield return null;
         }
-        _transform.position = _endPosition;
 
+        handMover.leftHandRB.interpolation = RigidbodyInterpolation.Interpolate;
+        _transform.position = _endPosition;
         handLogic.sceneActive = true;
     }
 

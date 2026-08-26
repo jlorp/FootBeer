@@ -45,12 +45,13 @@ public class HandMover : MonoBehaviour
     public LayerMask beerTapMask;
     public GameObject beerDroppable;
     bool beerDropped = false;
+    public Transform rHandYOffset;
+    public float curlHeightOffset = 0.3f;
 
     //Input
     Vector2 rightHandInput, leftHandInput;
     bool pullingTab;
     float framesPullingTab;
-    float curlHeight, pokeHeight;
     float rTargetHeight;
 
     public bool sceneActive;
@@ -65,10 +66,6 @@ public class HandMover : MonoBehaviour
         originalRightHandRotation = rHandTargetTransform.localRotation;
         tabStartPosition = cantab.localPosition;
         lHandAnimator.SetBool("holdBeer", true);
-
-        pokeHeight= rHandTargetTransform.position.y;
-        curlHeight = pokeHeight + 0.3f;
-        rTargetHeight = pokeHeight;
 
         rHandStartPosition=rightHandRB.transform.position;
     }
@@ -100,8 +97,19 @@ public class HandMover : MonoBehaviour
     void AdjustRightHandHeight()
     {
         if(tabGrabbed || canOpen) return;
-        if(rHandTargetTransform.position.y == rTargetHeight) return;
-        rHandTargetTransform.position =  new Vector3(rHandTargetTransform.position.x, rTargetHeight, rHandTargetTransform.position.z);
+
+        if(rHandYOffset.localPosition.y == rTargetHeight) return;
+        Vector3 targetHeight=  new Vector3(0, rTargetHeight, 0);
+        rHandYOffset.localPosition = Vector3.Lerp(rHandYOffset.localPosition, targetHeight, 10f * Time.deltaTime);
+
+        if(rightHandRB.transform.position.y == rHandStartPosition.y) return;
+
+        Vector3 targetHeight2 = rightHandRB.transform.position;
+        targetHeight2.y = rHandStartPosition.y;
+        float positiondifference = targetHeight2.y - rightHandRB.transform.position.y;
+        rightHandRB.transform.position= targetHeight2;
+
+        rHandYOffset.localPosition -= Vector3.up * positiondifference;
     }
 
     void UpdateFingerPosition() 
@@ -137,6 +145,9 @@ public class HandMover : MonoBehaviour
         Vector3 handDirection = (fingerTipPosition.position - beerCan.position).normalized;
         leftHandRB.velocity = -maxSpeed * handDirection * 3f;
         rightHandRB.velocity = maxSpeed * handDirection * 3f;
+
+        float _pitch = UnityEngine.Random.Range(1.5f, 1.6f);
+        AudioManager.Instance.PlaySound(AudioManager.Instance.canKickSounds[1], 0.5f, _pitch, fingerTipPosition.position);
 
         if(dropOnPoke) DropBeer(handDirection);
     }
@@ -199,6 +210,7 @@ public class HandMover : MonoBehaviour
         float elapsedTime = 0;
         Vector3 _startPosition = _transform.localPosition;
         Quaternion _startRotation = _transform.localRotation;
+        Vector3 _offsetStartPosition = rHandYOffset.localPosition;
 
         while(elapsedTime < duration && tabGrabbed)
         {
@@ -206,13 +218,16 @@ public class HandMover : MonoBehaviour
 
             _transform.localPosition = Vector3.Lerp(_startPosition, _endPosition, t);
             _transform.localRotation= Quaternion.Lerp(_startRotation, Quaternion.identity, t);
+
+            rHandYOffset.localPosition = Vector3.Lerp(_offsetStartPosition, _endPosition, t);
+
             elapsedTime += Time.deltaTime;
             yield return null;
         }
 
         if(tabGrabbed)
         {
-            _transform.localPosition = _endPosition;
+            _transform.localPosition = rHandYOffset.localPosition = _endPosition;
             _transform.localRotation = Quaternion.identity;
         }
     }
@@ -296,14 +311,14 @@ public class HandMover : MonoBehaviour
     {
         curled = true;
         rHandAnimator.SetBool("curled", true);
-        rTargetHeight = curlHeight;
+        rTargetHeight = curlHeightOffset;
     }
 
     void Uncurl()
     {
         curled = false;
         rHandAnimator.SetBool("curled", false);
-        rTargetHeight = pokeHeight;
+        rTargetHeight = 0;
     }
 
     void MoveHands()
@@ -353,7 +368,9 @@ public class HandMover : MonoBehaviour
         lHandAnimator.SetBool("holdBeer", true);
         lHandAnimator.SetBool("open", false);
         beerCan.gameObject.SetActive(true);
-        rightHandRB.transform.position = rHandStartPosition;
+        
+        rightHandRB.MovePosition(rHandStartPosition);
+        rightHandRB.velocity=Vector3.zero;
         beerDropped = false;
     }
 }

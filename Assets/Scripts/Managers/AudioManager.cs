@@ -12,6 +12,8 @@ public class AudioManager : MonoBehaviour
 
     public AudioClip splashSound;
     public AudioClip canOpenSound;
+    public AudioClip[] bubblePopSounds;
+    public AudioClip[] canKickSounds;
 
     void Start()
     {
@@ -33,6 +35,15 @@ public class AudioManager : MonoBehaviour
         kick.PlayOneShot(_sound);
     }
 
+    public void PlaySound(AudioClip[] _soundArray, float _volume, float _pitch, Vector3 _worldPosition)
+    {
+        kick.volume = _volume;
+        kick.pitch = _pitch;
+        kick.panStereo= GetStereoPosition(_worldPosition);
+        int sound = UnityEngine.Random.Range(0, _soundArray.Length);
+        kick.PlayOneShot(_soundArray[sound]);
+    }
+
     float GetStereoPosition(Vector3 _worldPosition)
     {
         float screenPositionX = CameraManager.Instance.activeCamera.WorldToViewportPoint(_worldPosition).x;
@@ -43,6 +54,12 @@ public class AudioManager : MonoBehaviour
     public void ExitWater()
     {
         lakeLoop.volume = 0.1f;
+        windloop.volume = 0.5f;
+    }
+
+    public void EnterWater()
+    {
+        lakeLoop.volume = 0.75f;
         windloop.volume = 0.5f;
     }
 }

@@ -52,6 +52,7 @@ public class CameraManager : MonoBehaviour
     void OnExitScene2()
     {
         GameManager.Instance.handMover.sceneActive = false;
+        AudioManager.Instance.EnterWater();
     }
 
     void OnExitScene1()

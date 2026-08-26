@@ -52,12 +52,18 @@ public class KeyHandler : MonoBehaviour
 
         return _framesHeld;
     }
-
+    void PlayBubblePop(Vector3 position)
+    {
+        float pitch = UnityEngine.Random.Range(0.9f, 1.25f);
+        AudioManager.Instance.PlaySound(AudioManager.Instance.bubblePopSounds, 0.25f, pitch, position);
+    }
     void DestroyKey(Transform key)
     {
         Instantiate(popParticle, key.position, popParticle.transform.rotation);
         key.gameObject.SetActive(false);
         totalPops +=1;
+
+        PlayBubblePop(key.position);
 
         if(totalPops == 8)
         {

@@ -18,9 +18,8 @@ public class PlaySoundOnImpact : MonoBehaviour
             collisionMagnitude *= volumeMultiplier;
             collisionMagnitude = Mathf.Clamp(collisionMagnitude,0,maxVolume);
 
-            int sound = UnityEngine.Random.Range(0, ImpactSounds.Length);
             float pitch = UnityEngine.Random.Range(.95f,1.05f);
-            AudioManager.Instance.PlaySound(ImpactSounds[sound],collisionMagnitude, pitch, transform.position);
+            AudioManager.Instance.PlaySound(ImpactSounds,collisionMagnitude, pitch, transform.position);
         }
     }
 }

@@ -40,6 +40,8 @@ public class ArmLogic : MonoBehaviour
     [HideInInspector]public bool holdingBeer = false;
 
     [HideInInspector] public bool sceneActive = true;
+
+    public SkinnedMeshRenderer armRenderer;
     
     void Start()
     {
@@ -79,6 +81,7 @@ public class ArmLogic : MonoBehaviour
     public void ForceArmUp()
     {
         transform.position = armStartPosition.position;
+        armRenderer.SetBlendShapeWeight(0, 0f);
     }
     
     void ExtendArm(Vector3 desiredHandPosition)

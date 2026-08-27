@@ -345,10 +345,10 @@ public class HandMover : MonoBehaviour
 
         if(tabGrabbed)
         {
+            if(rightHandInput.y < 0 || rightHandInput.x > 0 || leftHandInput.x < 0 || leftHandInput.y > 0) DropTab();
+            
             leftHandInput = (leftHandInput * 0.5f + rightHandInput * 0.5f);
             leftHandInput = Vector2.ClampMagnitude(leftHandInput,1f);
-
-            if(rightHandInput.y < 0 || rightHandInput.x > 0) DropTab();
 
             pullingTab = (rightX < 0 && leftX > 0);
 

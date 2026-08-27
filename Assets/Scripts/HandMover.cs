@@ -41,12 +41,11 @@ public class HandMover : MonoBehaviour
     Vector3 tabStartPosition;
 
     [Header("Beer Tap/Drop")]
-    public float tapCastDistance;
-    public LayerMask beerTapMask;
     public GameObject beerDroppable;
     bool beerDropped = false;
     public Transform rHandYOffset;
     public float curlHeightOffset = 0.3f;
+    public BeerSensor _beerSensor;
 
     //Input
     Vector2 rightHandInput, leftHandInput;
@@ -87,8 +86,6 @@ public class HandMover : MonoBehaviour
     void FixedUpdate()
     {
         if(!sceneActive)return;
-        BeerTapCast();
-
         MoveHands();
         UpdateCurl();   
         AdjustRightHandHeight();
@@ -122,27 +119,13 @@ public class HandMover : MonoBehaviour
         tabGrabParent.localPosition = tabGrabTargetPosition;
     }
 
-    void BeerTapCast()
+    public void OnPoke(bool dropOnPoke)
     {
         if(tabGrabbed || curled || canOpen) return;
-
-        RaycastHit hit; 
-        //senses beer during point phase to knock over
-        
-        Vector3 castDirection = rightHandRB.velocity.normalized;
-        if(castDirection.magnitude < .1f) castDirection = -fingerTipPosition.right;
-
-        Debug.DrawRay(fingerTipPosition.position, castDirection * tapCastDistance, Color.red);
-
-        if (Physics.SphereCast(fingerTipPosition.position, 0.05f, castDirection, out hit, tapCastDistance, beerTapMask))
-        {
-            OnPoke(true);
-        }
-    }
     
-    void OnPoke(bool dropOnPoke)
-    {
+
         Vector3 handDirection = (fingerTipPosition.position - beerCan.position).normalized;
+        handDirection = -(rightHandRB.velocity - leftHandRB.velocity).normalized;
         leftHandRB.velocity = -maxSpeed * handDirection * 3f;
         rightHandRB.velocity = maxSpeed * handDirection * 3f;
 
@@ -272,6 +255,7 @@ public class HandMover : MonoBehaviour
     void DropTab()
     {
         tabGrabbed = false;
+
         rHandTargetTransform.SetParent(originalRightHandParent);
         rHandTargetTransform.transform.localRotation= originalRightHandRotation;
         rightConstraint.rotationSpeed = 10;
@@ -319,6 +303,7 @@ public class HandMover : MonoBehaviour
         curled = false;
         rHandAnimator.SetBool("curled", false);
         rTargetHeight = 0;
+        _beerSensor.Reset();
     }
 
     void MoveHands()
@@ -372,5 +357,7 @@ public class HandMover : MonoBehaviour
         rightHandRB.MovePosition(rHandStartPosition);
         rightHandRB.velocity=Vector3.zero;
         beerDropped = false;
+
+        _beerSensor.Reset();
     }
 }

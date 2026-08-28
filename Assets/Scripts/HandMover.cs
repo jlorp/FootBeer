@@ -55,6 +55,7 @@ public class HandMover : MonoBehaviour
 
     public bool sceneActive;
     Vector3 rHandStartPosition;
+    bool tabSet = false;
 
     void Start()
     {
@@ -71,10 +72,10 @@ public class HandMover : MonoBehaviour
 
     void Update()
     {
+        if(Input.GetKeyDown(KeyCode.Alpha4)) GameManager.Instance.TakeDrink();
         if(!sceneActive) return;
 
         UpdateInputs();
-        //if(Input.GetKeyDown(KeyCode.Alpha4)) GrabTab();
         VibrateCan();
         PullTab();
 
@@ -119,15 +120,15 @@ public class HandMover : MonoBehaviour
         tabGrabParent.localPosition = tabGrabTargetPosition;
     }
 
-    public void OnPoke(bool dropOnPoke)
+    public void OnPoke(bool dropOnPoke, float bumpForce = 2.5f, bool normalizeX = true)
     {
-        if(tabGrabbed || curled || canOpen) return;
+        if((tabGrabbed || curled || canOpen) && dropOnPoke) return;
     
 
-        Vector3 handDirection = (fingerTipPosition.position - beerCan.position).normalized;
-        handDirection = -(rightHandRB.velocity - leftHandRB.velocity).normalized;
-        leftHandRB.velocity = -maxSpeed * handDirection * 3f;
-        rightHandRB.velocity = maxSpeed * handDirection * 3f;
+        Vector3 handDirection = handDirection = -(rightHandRB.velocity - leftHandRB.velocity).normalized;
+        if(normalizeX) handDirection.x = -Mathf.Abs(handDirection.x);
+        leftHandRB.velocity = -maxSpeed * handDirection * bumpForce;
+        rightHandRB.velocity = maxSpeed * handDirection * bumpForce;
 
         float _pitch = UnityEngine.Random.Range(1.5f, 1.6f);
         AudioManager.Instance.PlaySound(AudioManager.Instance.canKickSounds[1], 0.5f, _pitch, fingerTipPosition.position);
@@ -153,11 +154,45 @@ public class HandMover : MonoBehaviour
         cantab.localRotation = Quaternion.Euler(tabRotationCurrent,0,0);
     }
 
+    public bool SetTab()
+    {
+        if(!canOpen && !curled) return false;
+
+        Vector3 tapVelocity = -(rightHandRB.velocity - leftHandRB.velocity).normalized;
+
+        if(Vector3.Dot(tapVelocity, Vector3.left) >.6f)
+        {
+            StartCoroutine(SetTabAnimation(0.1f));
+            tabSet = true;
+            return true;
+        }
+        else
+        {
+            OnPoke(false, 1f, false);
+            return false;
+        }
+    }
+
+    IEnumerator SetTabAnimation(float duration)
+    {
+        float elapsedTime = 0;
+        Quaternion startRotTab = cantab.localRotation;
+        Quaternion targetRotTab = Quaternion.Euler(0,0,0);
+
+        while(elapsedTime < duration)
+        {
+            float t = elapsedTime / duration;
+            cantab.localRotation = Quaternion.Lerp(startRotTab,targetRotTab, t);
+            elapsedTime += Time.deltaTime;
+
+            yield return null;
+        }
+    }
+
     void OpenCan()
     {
         if(canOpen) return;
         StartCoroutine(OpenCanAnimation(.3f));
-        
 
         canOpen = true;
         DropTab();
@@ -274,21 +309,21 @@ public class HandMover : MonoBehaviour
         float tipDistanceY = fingerTipPosition.position.z - tabPosition.position.z;
 
         float curlYMinimum = -0.35f;
-        float curlYMaximum = -.2f;
+        float curlYMaximum = 0.4f;
 
         bool inCurlXRange = tipDistance > curlThreshold;
         bool inUncurlXRange = tipDistance < uncurlThreshold;
         bool inCurlYRange =  tipDistanceY < curlYMinimum;
         bool inUncurlYrange = tipDistanceY > curlYMaximum;
 
-        bool inGrabXRange = tipDistance > .05f && tipDistance < .35f;
+        bool inGrabXRange = tipDistance > 0f && tipDistance < .35f;
         
 
         if(!curled && (inCurlYRange && inCurlXRange)) Curl();
 
-        if(curled && (inUncurlXRange)) Uncurl();
+        if(curled && (inUncurlXRange || inUncurlYrange)) Uncurl();
 
-        if(curled && tipDistanceY > -.25f && inGrabXRange) GrabTab();
+        if(curled && tipDistanceY > -.3f && inGrabXRange) GrabTab();
     }
 
     void Curl()

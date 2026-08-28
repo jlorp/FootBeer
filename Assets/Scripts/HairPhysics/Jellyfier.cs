@@ -27,7 +27,7 @@ public class Jellyfier : MonoBehaviour
         meshFilter = GetComponent<MeshFilter>();
         mesh = meshFilter.mesh;
 
-        body.angularVelocity= new Vector3(0,1,1);
+        //body.angularVelocity= new Vector3(0,1,1);
 
         GetVertices();
     }

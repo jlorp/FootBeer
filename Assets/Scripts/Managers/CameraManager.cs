@@ -14,6 +14,7 @@ public class CameraManager : MonoBehaviour
     public GameObject BellySceneLights,LegSceneLights;
 
     int currentCamera;
+    public Canvas _canvas;
 
     void Start()
     {
@@ -39,12 +40,14 @@ public class CameraManager : MonoBehaviour
         {
             legCam.gameObject.SetActive(true);
             activeCamera=legCam;
+            _canvas.worldCamera = legCam;
             if(reset) ResetScene1();
         }
         else if(camera == 2)
         {
             bellyCam.gameObject.SetActive(true);
             activeCamera = bellyCam;
+            _canvas.worldCamera = bellyCam;
             if(reset) ResetScene2();
         }
         

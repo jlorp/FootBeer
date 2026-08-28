@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class KeyHandler : MonoBehaviour
 {
-    public Transform W,A,S,D,UP,DOWN,LEFT,RIGHT;
+    public Transform W,A,S,D,UP,DOWN,LEFT,RIGHT,SPACE;
     public GameObject popParticle;
     public float secondsToPop = 0.025f;
 
-    float Wframes, Aframes, Sframes, Dframes, Upframes, DownFrames, LeftFrames, RightFrames;
+    float Wframes, Aframes, Sframes, Dframes, Upframes, DownFrames, LeftFrames, RightFrames, SpaceFrames;
     public AnimationCurve popCurve;
 
     int totalPops = 0;
@@ -26,6 +26,7 @@ public class KeyHandler : MonoBehaviour
         DownFrames = PressButton(DOWN, Input.GetKey(KeyCode.DownArrow),DownFrames);
         LeftFrames = PressButton(LEFT, Input.GetKey(KeyCode.LeftArrow),LeftFrames);
         RightFrames = PressButton(RIGHT, Input.GetKey(KeyCode.RightArrow),RightFrames);
+        SpaceFrames = PressButton(SPACE, Input.GetKey(KeyCode.Space),SpaceFrames);
     }
 
     float PressButton(Transform key, bool pressed, float _framesHeld)
@@ -65,7 +66,7 @@ public class KeyHandler : MonoBehaviour
 
         PlayBubblePop(key.position);
 
-        if(totalPops == 8)
+        if(totalPops == 9)
         {
             StartCoroutine(FadeOut(0.5f));
         }

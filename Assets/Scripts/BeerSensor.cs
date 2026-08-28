@@ -14,8 +14,14 @@ public class BeerSensor : MonoBehaviour
 
     void OnTriggerEnter(Collider other) 
     {
+        if(other.TryGetComponent<TabPusher>(out TabPusher _tab))
+        {
+            if(!_tab.set) _tab.SetTab();
+        }
+
         if (fired) return;
         _hands.OnPoke(true);
+
         fired = true;
     }
 }

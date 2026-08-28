@@ -26,7 +26,7 @@ public class GameManager : MonoBehaviour
     public ArmLogic oldArm;
 
     //Belly_arm
-    public Transform beerHandTarget, beerHandStartPosition, beerHandEndPosition;
+    public Transform beerHandTarget, beerHandStartPosition, beerHandEndPosition, beerhandDrinkPosition;
     public AnimationCurve beerMovementcurve;
     public HandMover handLogic;
     public Beer beerCode;
@@ -60,27 +60,36 @@ public class GameManager : MonoBehaviour
 
     public void StartArmRaise()
     {
-        StartCoroutine(LerpTransformPostion(1,beerHandTarget, beerHandStartPosition.position, beerHandEndPosition.position));
+        StartCoroutine(LerpTransformPostion(1,beerHandTarget, beerHandStartPosition.position, beerHandEndPosition));
     }
 
-    IEnumerator LerpTransformPostion(float duration, Transform _transform, Vector3 _startPosition, Vector3 _endPosition)
+    public void TakeDrink()
+    {
+        StartCoroutine(LerpTransformPostion(2f,beerHandTarget, beerHandTarget.position, beerhandDrinkPosition, true));
+        StartCoroutine(FadeToBlack(0.75f, 0.5f));
+    }
+
+    IEnumerator LerpTransformPostion(float duration, Transform _transform, Vector3 _startPosition, Transform _endPosition, bool lerpRotation = false)
     {
         float elapsedTime = 0;
         _transform.position = _startPosition;
         handMover.leftHandRB.interpolation = RigidbodyInterpolation.None;
+        Quaternion _startRotation = _transform.rotation;
 
         while(elapsedTime < duration)
         {
             float t = elapsedTime / duration;
             t = beerMovementcurve.Evaluate(t);
 
-            _transform.position = Vector3.Lerp(_startPosition, _endPosition, t);
+            _transform.position = Vector3.Lerp(_startPosition, _endPosition.position, t);
+            if(lerpRotation) _transform.rotation = Quaternion.Lerp(_startRotation, _endPosition.rotation, t);
+
             elapsedTime += Time.deltaTime;
             yield return null;
         }
 
         handMover.leftHandRB.interpolation = RigidbodyInterpolation.Interpolate;
-        _transform.position = _endPosition;
+        _transform.position = _endPosition.position;
         handLogic.sceneActive = true;
     }
 
@@ -123,8 +132,25 @@ public class GameManager : MonoBehaviour
             elapsedTime += Time.deltaTime;
             yield return null;
         }
-
         fadeImage.color = new Color(0.0f, 0.0f, 0.0f, 0);
+    }
+
+    IEnumerator FadeToBlack(float duration, float delay)
+    {
+        float elapsedTime = 0;
+        fadeImage.color = new Color(0.0f, 0.0f, 0.0f, 0f); 
+
+        while(elapsedTime < duration + delay)
+        {
+            float t = (elapsedTime - delay) / duration;
+            t = Mathf.Clamp(t, 0,1);
+
+            fadeImage.color = new Color(0.0f, 0.0f, 0.0f, t); 
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        fadeImage.color = new Color(0.0f, 0.0f, 0.0f, 1);
     }
 
     IEnumerator ActivateArm(float activateTime)

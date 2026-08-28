@@ -72,7 +72,6 @@ public class HandMover : MonoBehaviour
 
     void Update()
     {
-        if(Input.GetKeyDown(KeyCode.Alpha4)) GameManager.Instance.TakeDrink();
         if(!sceneActive) return;
 
         UpdateInputs();
@@ -82,6 +81,7 @@ public class HandMover : MonoBehaviour
         if(framesPullingTab > canOpenTime) OpenCan();
         
         UpdateFingerPosition();
+        if(Input.GetKeyDown(KeyCode.Space) && canOpen) GameManager.Instance.TakeDrink();
     }
 
     void FixedUpdate()

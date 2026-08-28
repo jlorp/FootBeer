@@ -26,7 +26,7 @@ public class LiquidWobble : MonoBehaviour
 
         Vector3 rotationAdjusted = new Vector3(rotation.x, 0, rotation.z);
 
-        transform.localRotation =  Quaternion.Euler(rotationAdjusted);
+        transform.rotation =  Quaternion.Euler(rotationAdjusted);
         yChild.localRotation = Quaternion.Euler(new Vector3(0,rotation.y,0));
         SetScale(rotationAdjusted);
     }

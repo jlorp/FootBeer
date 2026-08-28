@@ -27,7 +27,7 @@ public class GameManager : MonoBehaviour
 
     //Belly_arm
     public Transform beerHandTarget, beerHandStartPosition, beerHandEndPosition, beerhandDrinkPosition;
-    public AnimationCurve beerMovementcurve;
+    public AnimationCurve beerMovementcurve, beerSipCurve;
     public HandMover handLogic;
     public Beer beerCode;
 
@@ -60,26 +60,27 @@ public class GameManager : MonoBehaviour
 
     public void StartArmRaise()
     {
-        StartCoroutine(LerpTransformPostion(1,beerHandTarget, beerHandStartPosition.position, beerHandEndPosition));
+        StartCoroutine(LerpTransformPostion(1,beerHandTarget, beerHandStartPosition.position, beerHandEndPosition, beerMovementcurve));
     }
 
     public void TakeDrink()
     {
-        StartCoroutine(LerpTransformPostion(2f,beerHandTarget, beerHandTarget.position, beerhandDrinkPosition, true));
-        StartCoroutine(FadeToBlack(0.75f, 0.5f));
+        StartCoroutine(LerpTransformPostion(0.75f,beerHandTarget, beerHandTarget.position, beerhandDrinkPosition, beerSipCurve, true, true));
+        StartCoroutine(FadeToBlack(0.75f, 1f));
     }
 
-    IEnumerator LerpTransformPostion(float duration, Transform _transform, Vector3 _startPosition, Transform _endPosition, bool lerpRotation = false)
+    IEnumerator LerpTransformPostion(float duration, Transform _transform, Vector3 _startPosition, Transform _endPosition, AnimationCurve _curve, bool lerpRotation = false, bool kinematicOnComplete = false)
     {
         float elapsedTime = 0;
         _transform.position = _startPosition;
         handMover.leftHandRB.interpolation = RigidbodyInterpolation.None;
+        handMover.leftHandRB.isKinematic = true;
         Quaternion _startRotation = _transform.rotation;
 
         while(elapsedTime < duration)
         {
             float t = elapsedTime / duration;
-            t = beerMovementcurve.Evaluate(t);
+            t = _curve.Evaluate(t);
 
             _transform.position = Vector3.Lerp(_startPosition, _endPosition.position, t);
             if(lerpRotation) _transform.rotation = Quaternion.Lerp(_startRotation, _endPosition.rotation, t);
@@ -89,6 +90,7 @@ public class GameManager : MonoBehaviour
         }
 
         handMover.leftHandRB.interpolation = RigidbodyInterpolation.Interpolate;
+        handMover.leftHandRB.isKinematic = kinematicOnComplete;
         _transform.position = _endPosition.position;
         handLogic.sceneActive = true;
     }

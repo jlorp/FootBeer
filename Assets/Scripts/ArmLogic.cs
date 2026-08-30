@@ -43,6 +43,11 @@ public class ArmLogic : MonoBehaviour
 
     public SkinnedMeshRenderer armRenderer;
     
+    //connecting the arm to the body
+    public Transform shoulderTargetPosition;
+    public Vector3 desiredElbowAngle;
+    Vector3 elbowTargetPosition;
+
     void Start()
     {
         startRotation = elbow.localRotation;
@@ -54,6 +59,8 @@ public class ArmLogic : MonoBehaviour
 
         elbowStartLocalPosition = armScaler.localPosition;
         handStartLocalPosition = forearmScaler.localPosition;
+
+        elbowTargetPosition = armStartPosition.position;
     }
 
     void Update()
@@ -80,7 +87,7 @@ public class ArmLogic : MonoBehaviour
 
     public void ForceArmUp()
     {
-        transform.position = armStartPosition.position;
+        elbowTargetPosition = armStartPosition.position;
         armRenderer.SetBlendShapeWeight(0, 0f);
     }
     
@@ -155,23 +162,19 @@ public class ArmLogic : MonoBehaviour
             Vector3 directionToBeer = beercan.position - elbow.position;
             directionToBeer.z=0;
 
-            //directionToBeer = Quaternion.Euler(0, 90, 0) * directionToBeer;
-
             Quaternion lookRotation = Quaternion.Euler(0,-Vector3.SignedAngle(shoulder.right, directionToBeer, Vector3.forward) + 180,0);
-            
-
+            Quaternion elbowAngle = Quaternion.Euler(0,-Vector3.SignedAngle(elbow.right, desiredElbowAngle, Vector3.forward) + shoulder.localEulerAngles.y, 0);
 
             Quaternion upRotation = lookRotation * Quaternion.Euler(Vector3.up * rotationRange);
             Quaternion downRotation = lookRotation * Quaternion.Euler(Vector3.up * -rotationRange);
             targetRotation = Quaternion.Slerp(upRotation, downRotation, lerpPostion);
-
         }
         else
         {
             targetRotation = startRotation;
         }
 
-        elbow.localRotation = Quaternion.Lerp(elbow.localRotation, targetRotation, Time.deltaTime * 4f);
+        elbow.localRotation = Quaternion.Lerp(elbow.localRotation, targetRotation, Time.deltaTime * 2f);
     }
     
     void HandleWristMovement()
@@ -218,13 +221,31 @@ public class ArmLogic : MonoBehaviour
 
     void SetElbowPosition()
     {
+        transform.position = shoulderTargetPosition.position;
+
         if(wristFired) return;
+
         Vector3 targetPosition = canInRange ? armFinalPosition.position : armStartPosition.position;
+        float movespeed = canInRange ? 3f : 3f;
+        
+        // set upper arm rotation
+        Vector3 directionElbowTarget = elbowTargetPosition - transform.position;
+        directionElbowTarget.z=0;
+        Quaternion lookRotation = Quaternion.Euler(0,-Vector3.SignedAngle(Vector3.up, directionElbowTarget, Vector3.forward) + 90, 0);
+        shoulder.localRotation = Quaternion.Lerp(shoulder.localRotation, lookRotation, Time.deltaTime * 30f);
 
-        float movespeed = canInRange ? 5f : 3f;
-        transform.position = Vector3.Lerp(transform.position, targetPosition, Time.deltaTime * movespeed);
+        // set upper arm stretch
+        armScaler.localPosition = Vector3.Lerp(armScaler.localPosition,-Vector3.right * Vector3.Magnitude(directionElbowTarget), 50f * Time.deltaTime);
 
-        armInPosition = (Vector3.Distance(transform.position, armFinalPosition.position)<.1f);
+        // set lower arm rotation
+        elbowTargetPosition = Vector3.Lerp(elbowTargetPosition, targetPosition, Time.deltaTime * 3f);
+
+        armInPosition = (Vector3.Distance(elbowTargetPosition, armFinalPosition.position) <.1f);
+
+        if(armInPosition && !holdingBeer) return;
+
+        Quaternion elbowAngle = Quaternion.Euler(0, -Vector3.SignedAngle(-armScaler.right, desiredElbowAngle, Vector3.forward), 0);
+        elbow.localRotation = Quaternion.Lerp(elbow.localRotation, elbowAngle, Time.deltaTime * 30f);
     }
 
     float CosAngle(float a, float b, float c) 

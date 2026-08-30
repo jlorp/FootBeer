@@ -31,6 +31,7 @@ public class FeetMovement : MonoBehaviour
     [Header("Dependencies")]
     public bool grounded;
     public Rigidbody rightFootRB,leftFootRB, crotchRB;
+    public ArmLogic arm;
 
     //Input
     Vector2 rightFootInput, leftFootInput;
@@ -183,9 +184,12 @@ public class FeetMovement : MonoBehaviour
         float leftY = Input.GetAxis("Left Vertical");
         float rightX = -Input.GetAxis("Right Horizontal");
         float rightY = Input.GetAxis("Right Vertical");
+        
 
         leftFootInput = new Vector2(leftX, leftY);
         rightFootInput = new Vector2(rightX, rightY);
+
+        if(arm.holdingBeer) leftFootInput = rightFootInput = -Vector3.up;
 
         //Crotch Raising
         bool leftRaise = leftFoot.OnGround && rightY < -0.3f && !leftFoot.atLimit;
@@ -209,6 +213,8 @@ public class FeetMovement : MonoBehaviour
 
         crotchMovementInput =  leftFootCrotchInput + rightFootCrotchInput;
         crotchRotateInput = (rightFootCrotchInput.y - leftFootCrotchInput.y) / crotchMoveSpeedLimit;
+
+        if(arm.holdingBeer) crotchMovementInput = Vector3.up * .75f;
     }
 
     public void ResetPlayerPosition()

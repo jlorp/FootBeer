@@ -45,7 +45,7 @@ public class ArmLogic : MonoBehaviour
     
     //connecting the arm to the body
     public Transform shoulderTargetPosition;
-    public Vector3 desiredElbowAngle;
+    public Vector3 desiredElbowAngleLow, desiredElbowAngleHigh;
     Vector3 elbowTargetPosition;
 
     void Start()
@@ -163,7 +163,7 @@ public class ArmLogic : MonoBehaviour
             directionToBeer.z=0;
 
             Quaternion lookRotation = Quaternion.Euler(0,-Vector3.SignedAngle(shoulder.right, directionToBeer, Vector3.forward) + 180,0);
-            Quaternion elbowAngle = Quaternion.Euler(0,-Vector3.SignedAngle(elbow.right, desiredElbowAngle, Vector3.forward) + shoulder.localEulerAngles.y, 0);
+            Quaternion elbowAngle = Quaternion.Euler(0,-Vector3.SignedAngle(elbow.right, desiredElbowAngleLow, Vector3.forward) + shoulder.localEulerAngles.y, 0);
 
             Quaternion upRotation = lookRotation * Quaternion.Euler(Vector3.up * rotationRange);
             Quaternion downRotation = lookRotation * Quaternion.Euler(Vector3.up * -rotationRange);
@@ -226,6 +226,7 @@ public class ArmLogic : MonoBehaviour
         if(wristFired) return;
 
         Vector3 targetPosition = canInRange ? armFinalPosition.position : armStartPosition.position;
+        if(holdingBeer) targetPosition = shoulderTargetPosition.position + Vector3.right * -1 - Vector3.up * .25f;
         float movespeed = canInRange ? 3f : 3f;
         
         // set upper arm rotation
@@ -235,7 +236,7 @@ public class ArmLogic : MonoBehaviour
         shoulder.localRotation = Quaternion.Lerp(shoulder.localRotation, lookRotation, Time.deltaTime * 30f);
 
         // set upper arm stretch
-        armScaler.localPosition = Vector3.Lerp(armScaler.localPosition,-Vector3.right * Vector3.Magnitude(directionElbowTarget), 50f * Time.deltaTime);
+        //armScaler.localPosition = Vector3.Lerp(armScaler.localPosition,-Vector3.right * Vector3.Magnitude(directionElbowTarget), 50f * Time.deltaTime);
 
         // set lower arm rotation
         elbowTargetPosition = Vector3.Lerp(elbowTargetPosition, targetPosition, Time.deltaTime * 3f);
@@ -244,8 +245,11 @@ public class ArmLogic : MonoBehaviour
 
         if(armInPosition && !holdingBeer) return;
 
+        Vector3 desiredElbowAngle = canInRange ? desiredElbowAngleLow : desiredElbowAngleHigh;
+        if(holdingBeer) desiredElbowAngle = Vector3.right;
+
         Quaternion elbowAngle = Quaternion.Euler(0, -Vector3.SignedAngle(-armScaler.right, desiredElbowAngle, Vector3.forward), 0);
-        elbow.localRotation = Quaternion.Lerp(elbow.localRotation, elbowAngle, Time.deltaTime * 30f);
+        elbow.localRotation = Quaternion.Lerp(elbow.localRotation, elbowAngle, Time.deltaTime * 2f);
     }
 
     float CosAngle(float a, float b, float c) 

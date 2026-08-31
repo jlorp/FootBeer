@@ -16,6 +16,7 @@ public class BeerGrabber : MonoBehaviour
             beer.transform.localPosition = Vector3.zero;
             arm.holdingBeer = true;
             arm.armRenderer.SetBlendShapeWeight(0, 100f);
+            AudioManager.Instance.PlaySound(AudioManager.Instance.canGrabSounds, 1, Random.Range(0.95f,1.05f), transform.position);
             //GameManager.Instance.PlayDialogue("YES!", .15f, 2f, 0);
         }
     }

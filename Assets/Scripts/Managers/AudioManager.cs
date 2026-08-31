@@ -9,15 +9,26 @@ public class AudioManager : MonoBehaviour
     public AudioSource kick;
     public AudioSource lakeLoop;
     public AudioSource windloop;
+    public AudioSource metalCreakLoop;
 
     public AudioClip splashSound;
     public AudioClip canOpenSound;
+    public AudioClip canOpenSound2;
     public AudioClip[] bubblePopSounds;
     public AudioClip[] canKickSounds;
+    public AudioClip[] canGrabSounds;
+    public AudioClip[] tabTouchSounds;
+    public AudioClip[] canCreakSounds;
 
     void Start()
     {
         Instance = this;
+    }
+
+    public void SetCreakVolume(float volume, float pitch)
+    {
+        metalCreakLoop.volume = volume;
+        metalCreakLoop.pitch = pitch;
     }
 
     public void PlaySplash()

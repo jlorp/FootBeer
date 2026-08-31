@@ -148,8 +148,14 @@ public class HandMover : MonoBehaviour
 
     void PullTab()
     {
-        if(!pullingTab || canOpen) return;
+        if(!pullingTab || canOpen) 
+        {
+            AudioManager.Instance.SetCreakVolume(0,1);
+            return;
+        }
         float pullPercent = framesPullingTab/canOpenTime;
+        float creakpitch = Mathf.Lerp(.8f,1f, pullPercent);
+        AudioManager.Instance.SetCreakVolume(pullPercent * 0.3f, creakpitch);
         float tabRotationCurrent = Mathf.Lerp(tabMinRotate, tabMaxRotate, pullPercent);
         cantab.localRotation = Quaternion.Euler(tabRotationCurrent,0,0);
     }
@@ -192,6 +198,7 @@ public class HandMover : MonoBehaviour
     void OpenCan()
     {
         if(canOpen) return;
+        AudioManager.Instance.PlaySound(AudioManager.Instance.canOpenSound2, 1, 1f, canMouthPiece.position);
         StartCoroutine(OpenCanAnimation(.3f));
 
         canOpen = true;
@@ -257,7 +264,7 @@ public class HandMover : MonoBehaviour
         Quaternion targetRotTab = Quaternion.Euler(tabOpenRotate,0,0);
 
         canMouthPiece.localRotation = Quaternion.Euler(100f,0,0);
-        AudioManager.Instance.PlaySound(AudioManager.Instance.canOpenSound, 0.4f, 1.0f, canMouthPiece.position);
+        AudioManager.Instance.PlaySound(AudioManager.Instance.canOpenSound, 0.3f, 1f, canMouthPiece.position);
 
         while(elapsedTime < duration)
         {
@@ -277,6 +284,9 @@ public class HandMover : MonoBehaviour
         if(canOpen) return;
         if(rightHandInput.x > 0) return;
 
+
+        AudioManager.Instance.PlaySound(AudioManager.Instance.tabTouchSounds, 0.3f, Random.Range(1.2f,1.4f), transform.position);
+
         tabGrabbed = true;
         rightHandRB.transform.SetParent(tabGrabParent);
         
@@ -289,6 +299,7 @@ public class HandMover : MonoBehaviour
 
     void DropTab()
     {
+        if(!tabGrabbed) return;
         tabGrabbed = false;
 
         rHandTargetTransform.SetParent(originalRightHandParent);
@@ -365,7 +376,11 @@ public class HandMover : MonoBehaviour
 
         if(tabGrabbed)
         {
-            if(rightHandInput.y < 0 || rightHandInput.x > 0 || leftHandInput.x < 0 || leftHandInput.y > 0) DropTab();
+            if(rightHandInput.y < 0 || rightHandInput.x > 0 || leftHandInput.x < 0 || leftHandInput.y > 0)
+            {
+                DropTab();
+                AudioManager.Instance.PlaySound(AudioManager.Instance.tabTouchSounds, 0.2f, Random.Range(0.8f,0.9f), transform.position);
+            }
             
             leftHandInput = (leftHandInput * 0.5f + rightHandInput * 0.5f);
             leftHandInput = Vector2.ClampMagnitude(leftHandInput,1f);

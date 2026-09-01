@@ -169,6 +169,7 @@ public class HandMover : MonoBehaviour
         if(Vector3.Dot(tapVelocity, Vector3.left) >.6f)
         {
             StartCoroutine(SetTabAnimation(0.1f));
+            AudioManager.Instance.PlaySound(AudioManager.Instance.tabTouchSounds, 0.3f, Random.Range(1.1f,1.2f), transform.position);
             tabSet = true;
             return true;
         }

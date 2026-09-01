@@ -52,10 +52,10 @@ public class GameManager : MonoBehaviour
     {
         yield return new WaitForSeconds(delay);
 
-        PlayDialogue("oh wait, shit", .15f, 2.5f, 0);
-        StartCoroutine(ActivateArm(10));
+        PlayDialogue("oh my god", .1f, 2.5f, 0, AudioManager.Instance.omg);
+        StartCoroutine(ActivateArm(7));
         DropBeer();
-        PlayDialogue("god damnit", .3f, 2f, 4f);
+        PlayDialogue("fuck", .3f, 1f, 4f, AudioManager.Instance.fuck);
     }
 
     public void StartArmRaise()
@@ -115,9 +115,9 @@ public class GameManager : MonoBehaviour
         AudioManager.Instance.PlaySplash();
     }
 
-    public void PlayDialogue(string requestedPhrase, float timeBetweenWords, float timeBeforeClear, float initialDelay)
+    public void PlayDialogue(string requestedPhrase, float timeBetweenWords, float timeBeforeClear, float initialDelay, AudioClip _sound)
     {
-        StartCoroutine(AnimateWords(requestedPhrase, timeBetweenWords, timeBeforeClear, initialDelay));
+        StartCoroutine(AnimateWords(requestedPhrase, timeBetweenWords, timeBeforeClear, initialDelay, _sound));
     }
 
     IEnumerator FadeFromBlack(float duration, float delay)
@@ -167,9 +167,10 @@ public class GameManager : MonoBehaviour
         StartCoroutine(ActivateArm(delay));
     }
 
-    IEnumerator AnimateWords(string sentance, float timeBetweenWords, float timeBeforeClear, float initialDelay)
+    IEnumerator AnimateWords(string sentance, float timeBetweenWords, float timeBeforeClear, float initialDelay, AudioClip _sound)
     {
         yield return new WaitForSeconds(initialDelay);
+        AudioManager.Instance.PlayDialogue(_sound, 1, beerStartPosition);
         playerText.SetText(sentance);
         playerText.ForceMeshUpdate();
         

@@ -182,6 +182,10 @@ public class ArmLogic : MonoBehaviour
         if(!wristFired) return;
 
         ExtendArm(handPositionTarget.position);
+
+        float distanceToHand = Vector3.Distance(handPositionTarget.position, handStartPosition);
+        float volume = Mathf.Clamp(distanceToHand/3, 0, 0.3f);
+        AudioManager.Instance.SetLoopVolume(AudioManager.Instance.armMoveLoop,volume, 1);
       
         if(wristExtending)
         {
@@ -196,6 +200,7 @@ public class ArmLogic : MonoBehaviour
         if (wristReturning)
         {
             handPositionTarget.position= Vector3.MoveTowards( handPositionTarget.position, handStartPosition, Time.deltaTime * armSpeed);
+
             if(handPositionTarget.position == handStartPosition)
             {
                 transform.rotation = upperArmStartRotation;
@@ -213,6 +218,8 @@ public class ArmLogic : MonoBehaviour
         handPositionTarget.position = handPosition.position;
         handStartPosition = handPosition.position;
         handPositionTarget.rotation = handPosition.rotation;
+        float pitch = Random.Range(.8f,1.2f);
+        AudioManager.Instance.PlaySound(AudioManager.Instance.armFireSound, 0.3f, pitch, handPositionTarget.position);
         
         wristFired = true;
         wristExtending =true;
@@ -241,7 +248,7 @@ public class ArmLogic : MonoBehaviour
         // set lower arm rotation
         elbowTargetPosition = Vector3.Lerp(elbowTargetPosition, targetPosition, Time.deltaTime * 3f);
 
-        armInPosition = (Vector3.Distance(elbowTargetPosition, armFinalPosition.position) <.1f);
+        armInPosition = (Vector3.Distance(elbowTargetPosition, armFinalPosition.position) <.25f);
 
         if(armInPosition && !holdingBeer) return;
 

@@ -7,18 +7,23 @@ public class AudioManager : MonoBehaviour
     public static AudioManager Instance;
 
     public AudioSource kick;
+    public AudioSource dialogue;
     public AudioSource lakeLoop;
     public AudioSource windloop;
     public AudioSource metalCreakLoop;
+    public AudioSource armMoveLoop;
+
+    public AudioClip fuck;
+    public AudioClip omg;
 
     public AudioClip splashSound;
     public AudioClip canOpenSound;
     public AudioClip canOpenSound2;
+    public AudioClip armFireSound;
     public AudioClip[] bubblePopSounds;
     public AudioClip[] canKickSounds;
     public AudioClip[] canGrabSounds;
     public AudioClip[] tabTouchSounds;
-    public AudioClip[] canCreakSounds;
 
     void Start()
     {
@@ -29,6 +34,12 @@ public class AudioManager : MonoBehaviour
     {
         metalCreakLoop.volume = volume;
         metalCreakLoop.pitch = pitch;
+    }
+
+    public void SetLoopVolume(AudioSource _loop, float _volume, float _pitch)
+    {
+        _loop.volume = _volume;
+        _loop.pitch = _pitch;
     }
 
     public void PlaySplash()
@@ -44,6 +55,13 @@ public class AudioManager : MonoBehaviour
         kick.pitch = _pitch;
         kick.panStereo= GetStereoPosition(_worldPosition);
         kick.PlayOneShot(_sound);
+    }
+
+    public void PlayDialogue(AudioClip _sound, float _volume, Vector3 _worldPosition)
+    {
+        dialogue.volume = _volume;
+        dialogue.panStereo= GetStereoPosition(_worldPosition);
+        dialogue.PlayOneShot(_sound);
     }
 
     public void PlaySound(AudioClip[] _soundArray, float _volume, float _pitch, Vector3 _worldPosition)

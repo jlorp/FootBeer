@@ -44,14 +44,21 @@ public class HandMover : MonoBehaviour
     public GameObject beerDroppable;
     bool beerDropped = false;
     public Transform rHandYOffset;
-    public float curlHeightOffset = 0.3f;
+    public float curlHeightOffset = 0.5f;
     public BeerSensor _beerSensor;
+
+
+    [Header("Beer Tip to Drop")]
+    public Quaternion beerhandMaxRotation;
+    Quaternion beerHandStartRotation;
 
     //Input
     Vector2 rightHandInput, leftHandInput;
     bool pullingTab;
     float framesPullingTab;
     float rTargetHeight;
+    float framesTippingTab;
+    float canTipTime = 0.3f;
 
     public bool sceneActive;
     Vector3 rHandStartPosition;
@@ -68,6 +75,7 @@ public class HandMover : MonoBehaviour
         lHandAnimator.SetBool("holdBeer", true);
 
         rHandStartPosition=rightHandRB.transform.position;
+        beerHandStartRotation = leftHandRB.transform.rotation;
     }
 
     void Update()
@@ -77,6 +85,7 @@ public class HandMover : MonoBehaviour
         UpdateInputs();
         VibrateCan();
         PullTab();
+        TipTab();
 
         if(framesPullingTab > canOpenTime) OpenCan();
         
@@ -122,6 +131,7 @@ public class HandMover : MonoBehaviour
 
     public void OnPoke(bool dropOnPoke, float bumpForce = 2.5f, bool normalizeX = true)
     {
+        if(beerDropped) return;
         if((tabGrabbed || curled || canOpen) && dropOnPoke) return;
     
 
@@ -138,7 +148,7 @@ public class HandMover : MonoBehaviour
 
     void DropBeer(Vector3 _handDirection)
     {
-        beerDropped =true;
+        beerDropped = true;
         lHandAnimator.SetBool("open", true);
         beerCan.gameObject.SetActive(false);
         var droppedBeer = Instantiate(beerDroppable, beerCan.position, beerCan.rotation);
@@ -158,6 +168,24 @@ public class HandMover : MonoBehaviour
         AudioManager.Instance.SetCreakVolume(pullPercent * 0.3f, creakpitch);
         float tabRotationCurrent = Mathf.Lerp(tabMinRotate, tabMaxRotate, pullPercent);
         cantab.localRotation = Quaternion.Euler(tabRotationCurrent,0,0);
+    }
+
+    void TipTab()
+    {
+        Quaternion desiredRotation = beerHandStartRotation;
+
+        float pullPercent = framesTippingTab/canTipTime;
+        desiredRotation = Quaternion.Lerp(Quaternion.identity, beerhandMaxRotation,pullPercent);
+        canVibratePoint.localRotation= Quaternion.Lerp(canVibratePoint.localRotation, desiredRotation, Time.deltaTime * 20f);
+
+        if(pullPercent >= 1 && !beerDropped) 
+        {
+            DropTab();
+            leftHandRB.velocity = maxSpeed * Vector3.right * 2;
+            rightHandRB.velocity = -maxSpeed * Vector3.right * 2.5f;
+            DropBeer(Vector3.right);
+            Uncurl();
+        }
     }
 
     public bool SetTab()
@@ -220,7 +248,9 @@ public class HandMover : MonoBehaviour
 
         float speed = 10.0f;
         
+
         float intensity = Mathf.Clamp(framesPullingTab/canOpenTime,0,1);
+
         intensity = Mathf.Lerp(0, maxVibrateIntensity, intensity);
         Vector3 scrollingNoise = new Vector3(
             Mathf.PerlinNoise(speed * Time.time, 1),
@@ -311,6 +341,7 @@ public class HandMover : MonoBehaviour
         rightHandRB = rHandTargetTransform.gameObject.GetComponent<Rigidbody>();
         rightHandRB.constraints = RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezeRotation;
         rightHandRB.useGravity = false; 
+        framesTippingTab = 0;
     }
 
     void UpdateCurl()
@@ -340,6 +371,7 @@ public class HandMover : MonoBehaviour
 
     void Curl()
     {
+        if(beerDropped) return;
         curled = true;
         rHandAnimator.SetBool("curled", true);
         rTargetHeight = curlHeightOffset;
@@ -382,9 +414,20 @@ public class HandMover : MonoBehaviour
                 DropTab();
                 AudioManager.Instance.PlaySound(AudioManager.Instance.tabTouchSounds, 0.2f, Random.Range(0.8f,0.9f), transform.position);
             }
+
             
             leftHandInput = (leftHandInput * 0.5f + rightHandInput * 0.5f);
             leftHandInput = Vector2.ClampMagnitude(leftHandInput,1f);
+
+            if((rightX < 0 && leftX == 0))
+            {
+                framesTippingTab += 1 * Time.deltaTime;
+                leftHandInput.x = -0.5f;
+            }
+            else
+            {
+                framesTippingTab = 0;
+            }
 
             pullingTab = (rightX < 0 && leftX > 0);
 

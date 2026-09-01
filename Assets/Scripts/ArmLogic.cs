@@ -174,7 +174,7 @@ public class ArmLogic : MonoBehaviour
             targetRotation = startRotation;
         }
 
-        elbow.localRotation = Quaternion.Lerp(elbow.localRotation, targetRotation, Time.deltaTime * 2f);
+        elbow.localRotation = Quaternion.Lerp(elbow.localRotation, targetRotation, Time.deltaTime * 5f);
     }
     
     void HandleWristMovement()

@@ -97,12 +97,12 @@ public class HeadAnimation : MonoBehaviour
     void ApplyRotation()
     {
         Quaternion neckTargetQuat = Quaternion.Euler(neckBase.x, neckBase.y, neckZtarget);
-        neck.localRotation = Quaternion.Lerp(neck.localRotation, neckTargetQuat, Time.deltaTime * 4f);
+        neck.localRotation = Quaternion.Lerp(neck.localRotation, neckTargetQuat, Time.deltaTime * 8f);
 
         Quaternion neck1TargetQuat = Quaternion.Euler(neck1Base.x, neck1Base.y, neck1Ztarget);
-        neck1.localRotation = Quaternion.Lerp(neck1.localRotation, neck1TargetQuat, Time.deltaTime * 3f);
+        neck1.localRotation = Quaternion.Lerp(neck1.localRotation, neck1TargetQuat, Time.deltaTime * 6f);
 
         Quaternion headTargetQuat = Quaternion.Euler(headBase.x, headBase.y, headZtarget);
-        head.localRotation = Quaternion.Lerp(head.localRotation, headTargetQuat, Time.deltaTime * 2f);
+        head.localRotation = Quaternion.Lerp(head.localRotation, headTargetQuat, Time.deltaTime * 4f);
     }
 }

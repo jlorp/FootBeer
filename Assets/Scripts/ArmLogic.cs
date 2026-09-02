@@ -185,7 +185,7 @@ public class ArmLogic : MonoBehaviour
 
         float distanceToHand = Vector3.Distance(handPositionTarget.position, handStartPosition);
         float volume = Mathf.Clamp(distanceToHand/3, 0, 0.3f);
-        AudioManager.Instance.SetLoopVolume(AudioManager.Instance.armMoveLoop,volume, 1);
+        //AudioManager.Instance.SetLoopVolume(AudioManager.Instance.armMoveLoop,volume, 1);
       
         if(wristExtending)
         {

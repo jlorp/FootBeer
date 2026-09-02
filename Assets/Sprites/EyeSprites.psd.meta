@@ -110,7 +110,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: EyeSprites_0
+      name: L_Pupil
       rect:
         serializedVersion: 2
         x: 20
@@ -118,7 +118,7 @@ TextureImporter:
         width: 32
         height: 20
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -131,7 +131,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: EyeSprites_1
+      name: RPupil
       rect:
         serializedVersion: 2
         x: 85
@@ -139,7 +139,7 @@ TextureImporter:
         width: 28
         height: 24
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -152,7 +152,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: EyeSprites_2
+      name: LeftEye
       rect:
         serializedVersion: 2
         x: 87
@@ -160,7 +160,7 @@ TextureImporter:
         width: 115
         height: 68
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -173,7 +173,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: EyeSprites_3
+      name: Righteye
       rect:
         serializedVersion: 2
         x: 270
@@ -181,7 +181,7 @@ TextureImporter:
         width: 134
         height: 82
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -189,6 +189,48 @@ TextureImporter:
       bones: []
       spriteID: e18aea1bc1bfcc149b28cc9418457890
       internalID: 1549509230
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LeftBlink
+      rect:
+        serializedVersion: 2
+        x: 87
+        y: 266
+        width: 115
+        height: 68
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b6c289e970c9eef4ea6d7bb3fe97e616
+      internalID: 794117569
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: RightBlink
+      rect:
+        serializedVersion: 2
+        x: 270
+        y: 266
+        width: 134
+        height: 82
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f262039bcb9ace249a58c3c958174cba
+      internalID: 2005941047
       vertices: []
       indices: 
       edges: []
@@ -204,10 +246,12 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      EyeSprites_0: 611025934
-      EyeSprites_1: 81153434
-      EyeSprites_2: 310279397
-      EyeSprites_3: 1549509230
+      L_Pupil: 611025934
+      LeftBlink: 794117569
+      LeftEye: 310279397
+      RPupil: 81153434
+      RightBlink: 2005941047
+      Righteye: 1549509230
   mipmapLimitGroupName: 
   pSDRemoveMatte: 1
   userData: 

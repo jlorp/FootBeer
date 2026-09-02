@@ -13,11 +13,43 @@ public class HeadAnimation : MonoBehaviour
 
     public float wobbleSpeed, wobbleStrength;
 
+    //eyeStuff
+
+    public Transform rPupil, lPupil;
+    
+    public Vector2 blinkTimeRange;
+
+    public Vector2 blinkduration;
+
+    public SpriteRenderer rEye, lEye;
+    public Sprite rEyeOpen, rEyeBlink, lEyeOpen, lEyeBlink;
+
+    float timeToBlink;
+
     void Start()
     {
         neckBase = neck.localEulerAngles;
         neck1Base = neck1.localEulerAngles;
         headBase = head.localEulerAngles;
+        timeToBlink = Random.Range(blinkTimeRange.x, blinkTimeRange.y);
+    }
+
+    IEnumerator Blink()
+    {
+        rEye.sprite = rEyeBlink;
+        lEye.sprite = lEyeBlink;
+        rPupil.gameObject.SetActive(false);
+        lPupil.gameObject.SetActive(false);
+
+        float blinkTime = Random.Range(blinkduration.x, blinkduration.y);
+
+        yield return new WaitForSeconds(blinkTime);
+
+        rEye.sprite = rEyeOpen;
+        lEye.sprite = lEyeOpen;
+        timeToBlink = Random.Range(blinkTimeRange.x, blinkTimeRange.y);
+        rPupil.gameObject.SetActive(true);
+        lPupil.gameObject.SetActive(true);
     }
 
     void Update()
@@ -29,6 +61,20 @@ public class HeadAnimation : MonoBehaviour
         CrotchMovementEffect();
         WobbleEffect();
         ApplyRotation();
+
+        HandleBlink();
+    }
+
+    void HandleBlink()
+    {
+        if(timeToBlink > 0)
+        {
+            timeToBlink -= Time.deltaTime;
+            if (timeToBlink <=0)
+            {
+                StartCoroutine(Blink());
+            }
+        }
     }
 
     void WobbleEffect()

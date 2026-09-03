@@ -26,6 +26,10 @@ public class HeadAnimation : MonoBehaviour
 
     float timeToBlink;
 
+    public Transform beer;
+
+    public float rEyeMinX, rEyeMaxX, rEyeMinY, rEyeMaxY;
+
     void Start()
     {
         neckBase = neck.localEulerAngles;
@@ -63,6 +67,20 @@ public class HeadAnimation : MonoBehaviour
         ApplyRotation();
 
         HandleBlink();
+        EyeMovement(rEye.transform, rPupil.transform, rEyeMinY);
+        EyeMovement(lEye.transform, lPupil.transform, -0.015f);
+    }
+
+    void EyeMovement(Transform eye, Transform pupil, float eyeYMin)
+    {
+        Vector3 beerDirectionR = (beer.position - eye.position);
+        beerDirectionR = eye.InverseTransformDirection(beerDirectionR);
+        float pupilX = (Mathf.Clamp(beerDirectionR.x * 2f,-1,1));
+        pupilX = (pupilX/2) + 0.5f ;
+        float pupilLocalX = Mathf.Lerp(rEyeMinX, rEyeMaxX, pupilX);
+        float pupilY = (Mathf.Clamp(beerDirectionR.y,0,1 - Mathf.Abs(pupilX*2 -1)));
+        float pupilLocalY = Mathf.Lerp(eyeYMin, rEyeMaxY, pupilY);
+        pupil.localPosition = new Vector3(pupilLocalX, pupilLocalY, pupil.localPosition.z);
     }
 
     void HandleBlink()

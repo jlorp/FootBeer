@@ -34,6 +34,8 @@ public class GameManager : MonoBehaviour
     public HandMover handMover;
     public FeetMovement feetMovement;
 
+    bool drinkTaken = false;
+
     void Start()
     {
         Instance = this;
@@ -65,6 +67,8 @@ public class GameManager : MonoBehaviour
 
     public void TakeDrink()
     {
+        if (drinkTaken) return;
+        drinkTaken = true;
         StartCoroutine(LerpTransformPostion(0.75f,beerHandTarget, beerHandTarget.position, beerhandDrinkPosition, beerSipCurve, true, true));
         StartCoroutine(FadeToBlack(0.75f, 1f));
     }

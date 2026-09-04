@@ -184,14 +184,18 @@ public class ArmLogic : MonoBehaviour
         ExtendArm(handPositionTarget.position);
 
         float distanceToHand = Vector3.Distance(handPositionTarget.position, handStartPosition);
-        float volume = Mathf.Clamp(distanceToHand*2, 0, 1f);
-        AudioManager.Instance.SetLoopVolume(AudioManager.Instance.armMoveLoop, volume/2, volume/3 +.5f);
-      
+        float volume = Mathf.Clamp(distanceToHand*3, 0, 1f);
+        AudioManager.Instance.SetLoopVolume(AudioManager.Instance.armMoveLoop, volume * 0.6f, distanceToHand + 0.25f);
+
+        float armExtension = Vector3.Distance(handPositionTarget.position, handStartPosition);
+        float maxArmExtension = 0.5f;
+        float armSpeedAdjusted = Mathf.Lerp(armSpeed, .01f, (armExtension / maxArmExtension));
+        armSpeedAdjusted = Mathf.Clamp(armSpeedAdjusted, 0, 0.75f);
+
         if(wristExtending)
         {
-            handPositionTarget.position -= handPositionTarget.right * Time.deltaTime * armSpeed;
-            float armExtension = Vector3.Distance(handPositionTarget.position, handStartPosition);
-            if(armExtension >= .5 || holdingBeer)
+            handPositionTarget.position -= handPositionTarget.right * Time.deltaTime * armSpeedAdjusted;
+            if(armExtension >= maxArmExtension || holdingBeer)
             {
                 wristExtending = false;
                 wristReturning = true;
@@ -199,7 +203,7 @@ public class ArmLogic : MonoBehaviour
         }
         if (wristReturning)
         {
-            handPositionTarget.position= Vector3.MoveTowards( handPositionTarget.position, handStartPosition, Time.deltaTime * armSpeed);
+            handPositionTarget.position= Vector3.MoveTowards( handPositionTarget.position, handStartPosition, Time.deltaTime * armSpeedAdjusted);
 
             if(handPositionTarget.position == handStartPosition)
             {

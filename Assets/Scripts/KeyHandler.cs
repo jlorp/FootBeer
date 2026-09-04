@@ -56,7 +56,7 @@ public class KeyHandler : MonoBehaviour
     void PlayBubblePop(Vector3 position)
     {
         float pitch = UnityEngine.Random.Range(0.9f, 1.25f);
-        AudioManager.Instance.PlaySound(AudioManager.Instance.bubblePopSounds, 0.25f, pitch, position);
+        AudioManager.Instance.PlayBubble(AudioManager.Instance.bubblePopSounds, 0.25f, pitch, position);
     }
     void DestroyKey(Transform key)
     {
@@ -66,7 +66,7 @@ public class KeyHandler : MonoBehaviour
 
         PlayBubblePop(key.position);
 
-        if(totalPops == 9)
+        if(totalPops == 8)
         {
             StartCoroutine(FadeOut(0.5f));
         }

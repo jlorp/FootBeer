@@ -7,6 +7,8 @@ public class AudioManager : MonoBehaviour
     public static AudioManager Instance;
 
     public AudioSource kick;
+    public AudioSource bubble;
+
     public AudioSource dialogue;
     public AudioSource lakeLoop;
     public AudioSource windloop;
@@ -71,6 +73,15 @@ public class AudioManager : MonoBehaviour
         kick.panStereo= GetStereoPosition(_worldPosition);
         int sound = UnityEngine.Random.Range(0, _soundArray.Length);
         kick.PlayOneShot(_soundArray[sound]);
+    }
+
+    public void PlayBubble(AudioClip[] _soundArray, float _volume, float _pitch, Vector3 _worldPosition)
+    {
+        bubble.volume = _volume;
+        bubble.pitch = _pitch;
+        bubble.panStereo= GetStereoPosition(_worldPosition);
+        int sound = UnityEngine.Random.Range(0, _soundArray.Length);
+        bubble.PlayOneShot(_soundArray[sound]);
     }
 
     float GetStereoPosition(Vector3 _worldPosition)

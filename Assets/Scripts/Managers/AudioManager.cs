@@ -84,7 +84,7 @@ public class AudioManager : MonoBehaviour
         bubble.PlayOneShot(_soundArray[sound]);
     }
 
-    float GetStereoPosition(Vector3 _worldPosition)
+    public float GetStereoPosition(Vector3 _worldPosition)
     {
         float screenPositionX = CameraManager.Instance.activeCamera.WorldToViewportPoint(_worldPosition).x;
         screenPositionX = (screenPositionX * 2) -1;
@@ -93,13 +93,15 @@ public class AudioManager : MonoBehaviour
 
     public void ExitWater()
     {
-        lakeLoop.volume = 0.1f;
-        windloop.volume = 0.5f;
+        lakeLoop.volume = 0.25f;
+        windloop.volume = 0.4f;
+        windloop.pitch = 1f;
     }
 
     public void EnterWater()
     {
         lakeLoop.volume = 0.75f;
-        windloop.volume = 0.5f;
+        windloop.volume = 0.25f;
+        windloop.pitch = 0.8f;
     }
 }

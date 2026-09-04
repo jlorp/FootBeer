@@ -9,11 +9,15 @@ public class PlaySoundOnDrag : MonoBehaviour
 
     public float minSpeed,maxSpeed;
     public float minVolume,maxVolume;
+
+    public PhysicMaterial sandMaterial;
     
 
     private void OnCollisionStay(Collision collision)
     {
         //float collisionMagnitude = collision.relativeVelocity.magnitude;
+        if(collision.collider.sharedMaterial != sandMaterial) return;
+
 
         float speed = body.velocity.magnitude;
         if (speed < minSpeed)
@@ -31,8 +35,9 @@ public class PlaySoundOnDrag : MonoBehaviour
         SetDragVolume(_volume, 1);
     }
 
-    private void OnCollisionExit()
+    private void OnCollisionExit(Collision collision)
     {
+        if(collision.collider.sharedMaterial != sandMaterial) return;
         SetDragVolume(0,1);
     }
 

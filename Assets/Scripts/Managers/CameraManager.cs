@@ -28,30 +28,44 @@ public class CameraManager : MonoBehaviour
         bellyCam.gameObject.SetActive(false);
     }
 
-    public void SwitchCamera(int camera, bool reset)
+    IEnumerator SwitchCamera(float delay, int camera)
     {
-        if(camera == currentCamera) return;
-
+        yield return new WaitForSeconds(delay);
         ShutOffCameras();
-        if(currentCamera == 2) OnExitScene2();
-        if(currentCamera == 1) OnExitScene1();
 
         if(camera == 1)
         {
             legCam.gameObject.SetActive(true);
             activeCamera=legCam;
             _canvas.worldCamera = legCam;
-            if(reset) ResetScene1();
         }
         else if(camera == 2)
         {
             bellyCam.gameObject.SetActive(true);
             activeCamera = bellyCam;
             _canvas.worldCamera = bellyCam;
+        }
+
+        if(currentCamera == 2) OnExitScene2();
+        if(currentCamera == 1) OnExitScene1();
+
+        currentCamera = camera;
+    }
+
+    public void SwitchCamera(int camera, bool reset)
+    {
+        if(camera == currentCamera) return;
+
+        if(camera == 1)
+        {
+            if(reset) ResetScene1();
+        }
+        else if(camera == 2)
+        {
             if(reset) ResetScene2();
         }
-        
-        currentCamera = camera;
+
+        StartCoroutine(SwitchCamera(0.02f, camera));
     }
 
     void OnExitScene2()

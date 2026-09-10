@@ -18,6 +18,7 @@ public class GameManager : MonoBehaviour
     Vector3 beerStartPosition;
     Transform beerInitialParent;
     Quaternion beerStartRotation;
+    public Transform beerDropPosition2;
 
     //Dialogue handling
     public TMP_Text playerText;
@@ -56,7 +57,7 @@ public class GameManager : MonoBehaviour
 
         PlayDialogue("oh my god", .1f, 2.5f, 0, AudioManager.Instance.omg);
         StartCoroutine(ActivateArm(7));
-        DropBeer();
+        DropBeer(1);
         PlayDialogue("fuck", .3f, 1f, 4f, AudioManager.Instance.fuck);
     }
 
@@ -99,10 +100,19 @@ public class GameManager : MonoBehaviour
         handLogic.sceneActive = true;
     }
 
-    public void DropBeer()
+    public void DropBeer(int _beerPosition)
     {
         beerCode.OnDrop();
-        beer.transform.position = beerStartPosition;
+
+        if(_beerPosition == 1)
+        {
+            beer.transform.position = beerStartPosition;
+        }
+        else if( _beerPosition == 2)
+        {
+            beer.transform.position = beerDropPosition2.position;
+        }
+
         beer.transform.rotation = beerStartRotation;
         beer.transform.SetParent(beerInitialParent);
 

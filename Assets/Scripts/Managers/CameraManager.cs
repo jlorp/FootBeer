@@ -89,7 +89,7 @@ public class CameraManager : MonoBehaviour
     {
         GameManager.Instance.feetMovement.sceneActive = true;
         //drop beer/reset beer position
-        GameManager.Instance.DropBeer();
+        GameManager.Instance.DropBeer(2);
 
         //reset arm
         ArmLogic _arm = GameManager.Instance.oldArm;

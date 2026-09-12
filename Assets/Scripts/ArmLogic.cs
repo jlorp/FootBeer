@@ -16,7 +16,7 @@ public class ArmLogic : MonoBehaviour
     public bool armInPosition;
 
     bool wristFired = false;
-    bool wristExtending, wristReturning;
+    [HideInInspector] public bool wristExtending, wristReturning;
     public Transform elbow,shoulder;
     public float armSpeed;
 
@@ -197,8 +197,7 @@ public class ArmLogic : MonoBehaviour
             handPositionTarget.position -= handPositionTarget.right * Time.deltaTime * armSpeedAdjusted;
             if(armExtension >= maxArmExtension || holdingBeer)
             {
-                wristExtending = false;
-                wristReturning = true;
+                StartReturnWrist();
             }
         }
         if (wristReturning)
@@ -213,6 +212,12 @@ public class ArmLogic : MonoBehaviour
                 wristFired = false;
             }
         }
+    }
+
+    public void StartReturnWrist()
+    {
+        wristExtending = false;
+        wristReturning = true;
     }
 
     void FireWrist()

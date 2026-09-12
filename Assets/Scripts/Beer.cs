@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Beer : MonoBehaviour
 {
-    Rigidbody body;
+    public Rigidbody body;
     public BoxCollider collider;
     public CapsuleCollider collider2;
     bool isGrabbed = false;

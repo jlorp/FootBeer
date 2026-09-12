@@ -16,10 +16,17 @@ public class CameraManager : MonoBehaviour
     int currentCamera;
     public Canvas _canvas;
 
+    [HideInInspector] public float timeInScene = 0;
+
     void Start()
     {
         Instance = this;
         SwitchCamera(1, false);
+    }
+    
+    void  FixedUpdate()
+    {
+        timeInScene += Time.deltaTime;
     }
 
     void ShutOffCameras()
@@ -50,6 +57,7 @@ public class CameraManager : MonoBehaviour
         if(currentCamera == 1) OnExitScene1();
 
         currentCamera = camera;
+        timeInScene = 0;
     }
 
     public void SwitchCamera(int camera, bool reset)
@@ -83,6 +91,7 @@ public class CameraManager : MonoBehaviour
         GameManager.Instance.feetMovement.ResetPlayerPosition();
         BellySceneLights.SetActive(true);
         LegSceneLights.SetActive(false);
+
     }
 
     void ResetScene1()

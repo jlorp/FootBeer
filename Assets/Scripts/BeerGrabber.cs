@@ -8,6 +8,8 @@ public class BeerGrabber : MonoBehaviour
 
     void OnTriggerEnter(Collider other) 
     {
+        if(CameraManager.Instance.timeInScene < 1) return;
+
         if (other.TryGetComponent<Beer>(out Beer beer))
         {
             beer.OnGrab();

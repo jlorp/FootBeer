@@ -156,6 +156,7 @@ public class ArmLogic : MonoBehaviour
         armRotationTime += Time.deltaTime;
 
         Quaternion targetRotation;
+
         if(armInPosition && !holdingBeer)
         {
             float lerpPostion = Mathf.PingPong(armRotationTime, rotationTime)/rotationTime;
@@ -172,6 +173,7 @@ public class ArmLogic : MonoBehaviour
         else
         {
             targetRotation = startRotation;
+            armRotationTime = .25f;
         }
 
         elbow.localRotation = Quaternion.Lerp(elbow.localRotation, targetRotation, Time.deltaTime * 5f);

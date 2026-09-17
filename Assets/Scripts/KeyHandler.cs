@@ -16,8 +16,12 @@ public class KeyHandler : MonoBehaviour
     public GameObject startFade;
     public Material fadeMaterial;
 
+    bool sceneActive = true;
+
     void Update()
     {
+        if(!sceneActive) return;
+
         Wframes = PressButton(W, Input.GetKey(KeyCode.W),Wframes);
         Aframes = PressButton(A, Input.GetKey(KeyCode.A), Aframes);
         Sframes = PressButton(S, Input.GetKey(KeyCode.S), Sframes);
@@ -72,6 +76,23 @@ public class KeyHandler : MonoBehaviour
         }
     }
 
+    public void SkipBubbles()
+    {
+        totalPops = 8;
+        W.gameObject.SetActive(false);
+        A.gameObject.SetActive(false);
+        S.gameObject.SetActive(false);
+        D.gameObject.SetActive(false);
+        UP.gameObject.SetActive(false);
+        DOWN.gameObject.SetActive(false);
+        LEFT.gameObject.SetActive(false);
+        RIGHT.gameObject.SetActive(false);
+        SPACE.gameObject.SetActive(false);
+        startFade.SetActive(false);
+        GameManager.Instance.EndBubbleScene(0);
+        sceneActive=false;
+    }
+
     IEnumerator FadeOut(float duration)
     {
         float elapsedTime = 0;
@@ -88,6 +109,7 @@ public class KeyHandler : MonoBehaviour
         }
         startFade.SetActive(false);
         fadeMaterial.color = startColor;
-        GameManager.Instance.EndBubbleScene();
+        GameManager.Instance.EndBubbleScene(2);
+        sceneActive = false;
     }
 }

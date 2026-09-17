@@ -13,13 +13,36 @@ public class CameraManager : MonoBehaviour
 
     public GameObject BellySceneLights,LegSceneLights;
 
-    int currentCamera;
+    public int currentCamera;
     public Canvas _canvas;
+
+    [HideInInspector] public float timeInScene = 0;
 
     void Start()
     {
         Instance = this;
         SwitchCamera(1, false);
+    }   
+
+    void Update()
+    {
+        //debug skips
+        #if UNITY_EDITOR
+        if(Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            GameManager.Instance.keyHandler.SkipBubbles();
+            SwitchCamera(1,true);
+        }
+
+        if(Input.GetKeyDown(KeyCode.Alpha2)) SwitchCamera(2,true);
+
+        if(Input.GetKeyDown(KeyCode.Alpha3)) GameManager.Instance.ResetGame();
+        #endif
+    }
+    
+    void  FixedUpdate()
+    {
+        timeInScene += Time.deltaTime;
     }
 
     void ShutOffCameras()
@@ -50,6 +73,7 @@ public class CameraManager : MonoBehaviour
         if(currentCamera == 1) OnExitScene1();
 
         currentCamera = camera;
+        timeInScene = 0;
     }
 
     public void SwitchCamera(int camera, bool reset)
@@ -70,6 +94,7 @@ public class CameraManager : MonoBehaviour
 
     void OnExitScene2()
     {
+        Debug.Log("called exit scene 2");
         GameManager.Instance.handMover.sceneActive = false;
         AudioManager.Instance.EnterWater();
         BellySceneLights.SetActive(false);
@@ -78,11 +103,16 @@ public class CameraManager : MonoBehaviour
 
     void OnExitScene1()
     {
+        Debug.Log("called exit scene 1");
         GameManager.Instance.feetMovement.sceneActive = false;
+        GameManager.Instance.oldArm.sceneActive = false;
         //reset feet + crotch position/velocity
         GameManager.Instance.feetMovement.ResetPlayerPosition();
         BellySceneLights.SetActive(true);
         LegSceneLights.SetActive(false);
+
+        AudioManager.Instance.ExitWater();
+        GameManager.Instance.StartArmRaise();
     }
 
     void ResetScene1()

@@ -16,7 +16,7 @@ public class ArmLogic : MonoBehaviour
     public bool armInPosition;
 
     bool wristFired = false;
-    bool wristExtending, wristReturning;
+    [HideInInspector] public bool wristExtending, wristReturning;
     public Transform elbow,shoulder;
     public float armSpeed;
 
@@ -68,7 +68,6 @@ public class ArmLogic : MonoBehaviour
         if(!sceneActive) return;
 
         if(holdingBeer && beercan.position.y > 1.05f) SwitchScene();
-        if(Input.GetKeyDown(KeyCode.Alpha5)) SwitchScene();
 
         CheckCanPosition();
         SetElbowPosition();
@@ -79,10 +78,10 @@ public class ArmLogic : MonoBehaviour
 
     void SwitchScene()
     {
-        sceneActive = false;
+        if(CameraManager.Instance.currentCamera == 2) return;
+
         CameraManager.Instance.SwitchCamera(2,true);
-        AudioManager.Instance.ExitWater();
-        GameManager.Instance.StartArmRaise();
+        sceneActive = false;
     }
 
     public void ForceArmUp()
@@ -156,6 +155,7 @@ public class ArmLogic : MonoBehaviour
         armRotationTime += Time.deltaTime;
 
         Quaternion targetRotation;
+
         if(armInPosition && !holdingBeer)
         {
             float lerpPostion = Mathf.PingPong(armRotationTime, rotationTime)/rotationTime;
@@ -172,6 +172,7 @@ public class ArmLogic : MonoBehaviour
         else
         {
             targetRotation = startRotation;
+            armRotationTime = .25f;
         }
 
         elbow.localRotation = Quaternion.Lerp(elbow.localRotation, targetRotation, Time.deltaTime * 5f);
@@ -197,8 +198,7 @@ public class ArmLogic : MonoBehaviour
             handPositionTarget.position -= handPositionTarget.right * Time.deltaTime * armSpeedAdjusted;
             if(armExtension >= maxArmExtension || holdingBeer)
             {
-                wristExtending = false;
-                wristReturning = true;
+                StartReturnWrist();
             }
         }
         if (wristReturning)
@@ -213,6 +213,12 @@ public class ArmLogic : MonoBehaviour
                 wristFired = false;
             }
         }
+    }
+
+    public void StartReturnWrist()
+    {
+        wristExtending = false;
+        wristReturning = true;
     }
 
     void FireWrist()

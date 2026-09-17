@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -37,6 +38,8 @@ public class GameManager : MonoBehaviour
 
     bool drinkTaken = false;
 
+    public KeyHandler keyHandler;
+
     void Start()
     {
         Instance = this;
@@ -46,9 +49,15 @@ public class GameManager : MonoBehaviour
         StartCoroutine(FadeFromBlack(5,1));
     }
 
-    public void EndBubbleScene()
+    public void EndBubbleScene(float delay)
     {
-        StartCoroutine(GameStartStuff(2));
+        StartCoroutine(GameStartStuff(delay));
+    }
+
+    public void ResetGame()
+    {
+        string currentSceneName = SceneManager.GetActiveScene().name;
+        SceneManager.LoadScene(currentSceneName);
     }
 
     IEnumerator GameStartStuff(float delay)

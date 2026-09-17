@@ -68,7 +68,6 @@ public class ArmLogic : MonoBehaviour
         if(!sceneActive) return;
 
         if(holdingBeer && beercan.position.y > 1.05f) SwitchScene();
-        if(Input.GetKeyDown(KeyCode.Alpha5)) SwitchScene();
 
         CheckCanPosition();
         SetElbowPosition();
@@ -79,10 +78,10 @@ public class ArmLogic : MonoBehaviour
 
     void SwitchScene()
     {
-        sceneActive = false;
+        if(CameraManager.Instance.currentCamera == 2) return;
+
         CameraManager.Instance.SwitchCamera(2,true);
-        AudioManager.Instance.ExitWater();
-        GameManager.Instance.StartArmRaise();
+        sceneActive = false;
     }
 
     public void ForceArmUp()

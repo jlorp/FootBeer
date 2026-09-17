@@ -67,7 +67,7 @@ public class BeerGrabber : MonoBehaviour
         Vector3 beerDirectionR = (rFoot.transform.position - beer.transform.position).normalized;
         Vector3 beerDirectionL = (lFoot.transform.position - beer.transform.position).normalized;
 
-        float pokeVelocity = 0.75f;
+        float pokeVelocity = 0.85f;
 
         rFoot.velocity = beerDirectionR * pokeVelocity;
         lFoot.velocity = beerDirectionL * pokeVelocity;

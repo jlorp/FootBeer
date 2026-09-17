@@ -35,6 +35,7 @@ public class DroppableBeer : MonoBehaviour
 
     void ChangeScene()
     {
+        if(CameraManager.Instance.currentCamera == 1) return;
         CameraManager.Instance.SwitchCamera(1, true);
         Destroy(this.gameObject);
         GameManager.Instance.PlayDialogue("oh come on", .15f, 2.5f, 0f, AudioManager.Instance.omg);

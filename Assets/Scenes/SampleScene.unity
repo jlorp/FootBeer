@@ -7547,9 +7547,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3d93e9aab1f211745a8ceb58a51122b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bodies: []
+  Feet: []
   body: {fileID: 203116737}
-  grip: 1
+  grip: 0.75
   heldGravity: -0.15
 --- !u!136 &543050342
 CapsuleCollider:
@@ -7570,8 +7570,8 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.05
-  m_Height: 0.22
+  m_Radius: 0.06
+  m_Height: 0.25
   m_Direction: 1
   m_Center: {x: -0.000000009313226, y: 0.00040594116, z: 0.0000000018626451}
 --- !u!4 &557613814 stripped
@@ -7839,6 +7839,8 @@ MonoBehaviour:
   groundMask:
     serializedVersion: 2
     m_Bits: 128
+  movementIntent: {x: 0, y: 0, z: 0}
+  body: {fileID: 578692981}
 --- !u!114 &578692985
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9957,7 +9959,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   acceleration: 9
-  maxSpeed: 0.5
+  maxSpeed: 0.4
   dragNoInput: 1
   leftFoot: {fileID: 1521116888}
   rightFoot: {fileID: 578692984}
@@ -12632,6 +12634,8 @@ MonoBehaviour:
   groundMask:
     serializedVersion: 2
     m_Bits: 128
+  movementIntent: {x: 0, y: 0, z: 0}
+  body: {fileID: 1521116885}
 --- !u!114 &1521116889
 MonoBehaviour:
   m_ObjectHideFlags: 0

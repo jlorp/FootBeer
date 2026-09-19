@@ -8,8 +8,8 @@ public class FeetMovement : MonoBehaviour
     public float acceleration;
     public float maxSpeed;
     public float dragNoInput;
-    public FootCode leftFoot,rightFoot;
-    public Transform rKneeBone,lKneeBone;
+    public FootCode leftFoot, rightFoot;
+    public Transform rKneeBone, lKneeBone;
 
     [Header("Crotch Rotation")]
     public Transform crotch;
@@ -30,7 +30,7 @@ public class FeetMovement : MonoBehaviour
 
     [Header("Dependencies")]
     public bool grounded;
-    public Rigidbody rightFootRB,leftFootRB, crotchRB;
+    public Rigidbody rightFootRB, leftFootRB, crotchRB;
     public ArmLogic arm;
 
     //Input
@@ -128,8 +128,12 @@ public class FeetMovement : MonoBehaviour
 
     void MoveFeet()
     {
-        AdjustBodyVelocity(rightFootRB, new Vector2(rightFootInput.x, rightFootInput.y *.5f));
-        AdjustBodyVelocity(leftFootRB, new Vector2(leftFootInput.x, leftFootInput.y * .5f));
+        AdjustBodyVelocity(rightFootRB, new Vector2(rightFootInput.x, rightFootInput.y * .75f));
+        AdjustBodyVelocity(leftFootRB, new Vector2(leftFootInput.x, leftFootInput.y * .75f));
+
+        rightFoot.movementIntent = rightFootInput;
+        leftFoot.movementIntent = leftFootInput;
+
         AddLegTension(leftFootRB, -1);
         AddLegTension(rightFootRB, 1);
     }

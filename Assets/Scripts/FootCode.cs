@@ -18,13 +18,15 @@ public class FootCode : MonoBehaviour
 
     public LayerMask groundMask;
 
+    //this is used in PinchPhysics to check if you are pushing towards the beer to activate the pinch
+    [HideInInspector] public Vector3 movementIntent;
+    public Rigidbody body;
+
     void Start()
     {
         minGroundDotProduct = Mathf.Cos(maxGroundAngle * Mathf.Deg2Rad);
         joint = GetComponent<ConfigurableJoint>();
     }
-
-
 
 	void OnCollisionStay (Collision collision) 
     {

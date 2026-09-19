@@ -55,11 +55,11 @@ public class PinchPhysics : MonoBehaviour
 
         if (direction.x < 0 && _velocity.x < 0)
         {
-            _velocity.x = _velocity.x * Mathf.Abs(direction.x);
+            _velocity.x = _velocity.x * Mathf.Abs(direction.x/2);
         }
         else if (direction.x > 0 && _velocity.x > 0)
         {
-            _velocity.x = _velocity.x * Mathf.Abs(direction.x);
+            _velocity.x = _velocity.x * Mathf.Abs(direction.x/2);
         }
 
         body.velocity = _velocity;
@@ -71,12 +71,12 @@ public class PinchPhysics : MonoBehaviour
         {
             CheckFeetPinching();
 
+            body.velocity += (Vector3.up * heldGravity* Time.deltaTime);
+
             float pinchAmount = (foot2Pinch + foot1Pinch)/2;
 
             Vector3 averageVelocity = (Feet[0].body.velocity + Feet[1].body.velocity)/1.8f;
             body.velocity = Vector3.MoveTowards(body.velocity, averageVelocity, grip * Time.deltaTime * pinchAmount);
-
-            body.velocity += (Vector3.up * heldGravity* Time.deltaTime);
 
             DampenVelocityTowardsBeer();
             

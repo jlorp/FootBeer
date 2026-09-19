@@ -175,7 +175,14 @@ public class FeetMovement : MonoBehaviour
     void AdjustBodyVelocity(Rigidbody body, Vector2 desiredVelocity)
     {
         float localacceleration = desiredVelocity.magnitude > .1 ? acceleration : dragNoInput;
-        body.velocity = Vector3.MoveTowards(body.velocity, desiredVelocity * maxSpeed, localacceleration * Time.deltaTime);
+        localacceleration= localacceleration * Time.deltaTime;
+
+        Vector3 _velocity = new Vector3(
+            Mathf.MoveTowards(body.velocity.x, desiredVelocity.x * maxSpeed, localacceleration),
+            Mathf.MoveTowards(body.velocity.y, desiredVelocity.y * maxSpeed, localacceleration),
+            0);
+        
+        body.velocity = _velocity;
     }
 
     void  UpdateInputs()

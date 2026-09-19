@@ -55,11 +55,11 @@ public class PinchPhysics : MonoBehaviour
 
         if (direction.x < 0 && _velocity.x < 0)
         {
-            _velocity.x = _velocity.x * Mathf.Abs(direction.x/2);
+            _velocity.x = _velocity.x * Mathf.Abs(direction.x * 0.75f);
         }
         else if (direction.x > 0 && _velocity.x > 0)
         {
-            _velocity.x = _velocity.x * Mathf.Abs(direction.x/2);
+            _velocity.x = _velocity.x * Mathf.Abs(direction.x * 0.75f);
         }
 
         body.velocity = _velocity;

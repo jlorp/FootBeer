@@ -42,7 +42,7 @@ public class GameManager : MonoBehaviour
 
     //credits
     public GameObject benObject, jonnyObject, titleObject, replayObject;
-    bool resetAvailable = false;
+    public bool resetAvailable = false;
 
     void Start()
     {
@@ -83,6 +83,7 @@ public class GameManager : MonoBehaviour
     {
         if (drinkTaken) return;
         drinkTaken = true;
+        resetAvailable = false;
         StartCoroutine(LerpTransformPostion(1.25f,beerHandTarget, beerHandTarget.position, beerhandDrinkPosition, beerSipCurve, true, true));
         StartCoroutine(FadeToBlack(0.75f, 1f));
 

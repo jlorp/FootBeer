@@ -29,6 +29,12 @@ public class FeetMovement : MonoBehaviour
     public Vector3 lFootIdleRot, rFootIdleRot;
     public Vector3 rFootGroundedRotation,lFootGroundedRotation;
 
+    [Header("IK Handles")]
+    public Transform rightIK;
+    public Transform leftIK;
+    public float restDistanceIK;
+    public Transform upperLegL, upperLegR;
+
     [Header("Dependencies")]
     public bool grounded;
     public Rigidbody rightFootRB, leftFootRB, crotchRB;
@@ -57,6 +63,7 @@ public class FeetMovement : MonoBehaviour
         if(!sceneActive) return;
         UpdateInputs();
         RotateFeet(5f);
+        KneeOrient();
     }
 
     void FixedUpdate()
@@ -66,6 +73,23 @@ public class FeetMovement : MonoBehaviour
         RotateCrotch(5f, 2f);
         UpdateGrounded();
         MoveCrotch();
+    }
+
+    void KneeOrient()
+    {
+        Vector3 rKneeDirection = (rightFoot.transform.position - upperLegR.position).normalized;
+        rKneeDirection.z=0;
+        rKneeDirection = Quaternion.Euler(0, 0, 90) * rKneeDirection;
+
+        Vector3 middlePointR = (rightFoot.transform.position + upperLegR.position)/2;
+        rightIK.position = middlePointR + (rKneeDirection * restDistanceIK);
+
+        Vector3 lKneeDirection = (leftFoot.transform.position - upperLegL.position).normalized;
+        lKneeDirection.z=0;
+        lKneeDirection = Quaternion.Euler(0, 0, -90) * lKneeDirection;
+
+        Vector3 middlePointL = (leftFoot.transform.position + upperLegL.position)/2;
+        leftIK.position = middlePointL + (lKneeDirection * restDistanceIK);
     }
     
     void RotateFoot(Vector3 idleRotationVector, bool isGrounded, Vector3 footVelocity, Transform foot, Transform knee, float rotateSpeed, Vector3 footGroundedRotation, float rightLeft)

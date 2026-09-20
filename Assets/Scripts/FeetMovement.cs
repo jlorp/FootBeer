@@ -10,6 +10,7 @@ public class FeetMovement : MonoBehaviour
     public float dragNoInput;
     public FootCode leftFoot, rightFoot;
     public Transform rKneeBone, lKneeBone;
+    public float footGravity;
 
     [Header("Crotch Rotation")]
     public Transform crotch;
@@ -109,7 +110,7 @@ public class FeetMovement : MonoBehaviour
         //add gravity if not grounded
         if(!grounded)
         {
-            crotchMovementInput +=(Vector3.up * -crotchFallspeed);
+            crotchRB.velocity += (Vector3.up * -crotchFallspeed * Time.deltaTime);
         }
         else if(crotchMovementInput.y == 0)
         {
@@ -129,8 +130,12 @@ public class FeetMovement : MonoBehaviour
 
     void MoveFeet()
     {
-        AdjustBodyVelocity(rightFootRB, new Vector2(rightFootInput.x, rightFootInput.y * .75f));
-        AdjustBodyVelocity(leftFootRB, new Vector2(leftFootInput.x, leftFootInput.y * .75f));
+        AdjustBodyVelocity(rightFootRB, new Vector2(rightFootInput.x, Mathf.Clamp(rightFootInput.y, -1f, 0.66f)));
+        AdjustBodyVelocity(leftFootRB, new Vector2(leftFootInput.x, Mathf.Clamp(leftFootInput.y, -1f, 0.66f)));
+
+
+        leftFootRB.velocity += (footGravity + crotchRB.velocity.y) * Vector3.up * Time.deltaTime;
+        rightFootRB.velocity += (footGravity + crotchRB.velocity.y) * Vector3.up * Time.deltaTime;
 
         rightFoot.movementIntent = rightFootInput;
         leftFoot.movementIntent = leftFootInput;
@@ -151,27 +156,8 @@ public class FeetMovement : MonoBehaviour
         distanceToCrotchY= Mathf.Clamp(distanceToCrotchY, minForceDistance, maxForceDistance);
         float fullRange = maxForceDistance - minForceDistance;
         float percentForce =  1- ((distanceToCrotchY - minForceDistance) / fullRange);
-        
-        Debug.Log(percentForce);
 
         footVelocity.y -= (percentForce * downForce * Time.deltaTime);
-
-        // float distanceToCrotchX = (crotch.position.x + .6f * xDirection) - body.position.x;
-        // float minForceDistanceX = .3f * xDirection;
-        // float maxForceDistanceX = 0f;
-        // float sideForce = 15f * -xDirection;
-        // if(minForceDistanceX < maxForceDistanceX)
-        // {
-        //     maxForceDistanceX = minForceDistanceX;
-        //     minForceDistanceX = 0;
-        // }
-
-        // distanceToCrotchX = Mathf.Clamp(distanceToCrotchX, maxForceDistanceX, minForceDistanceX);
-        
-        // float percentForceX = 1- (Mathf.Abs(distanceToCrotchX)/Mathf.Abs(maxForceDistanceX - minForceDistanceX));
-        // float xForceCalculated = (percentForceX * sideForce * Time.deltaTime);
-        // footVelocity.x += xForceCalculated;
-
         body.velocity = footVelocity;
     }
 

@@ -235,6 +235,7 @@ public class HandMover : MonoBehaviour
         Uncurl();
         rightHandRB.velocity = Vector3.right * -4f;
         leftHandRB.velocity = Vector3.right * 1f;
+        GameManager.Instance.EndCreditsStart(2f);
     }
 
     void VibrateCan()

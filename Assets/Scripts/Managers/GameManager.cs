@@ -40,6 +40,10 @@ public class GameManager : MonoBehaviour
 
     public KeyHandler keyHandler;
 
+    //credits
+    public GameObject benObject, jonnyObject, titleObject, replayObject;
+    bool resetAvailable = false;
+
     void Start()
     {
         Instance = this;
@@ -79,8 +83,33 @@ public class GameManager : MonoBehaviour
     {
         if (drinkTaken) return;
         drinkTaken = true;
-        StartCoroutine(LerpTransformPostion(0.75f,beerHandTarget, beerHandTarget.position, beerhandDrinkPosition, beerSipCurve, true, true));
+        StartCoroutine(LerpTransformPostion(1.25f,beerHandTarget, beerHandTarget.position, beerhandDrinkPosition, beerSipCurve, true, true));
         StartCoroutine(FadeToBlack(0.75f, 1f));
+
+        titleObject.SetActive(false); 
+        jonnyObject.SetActive(false);
+        benObject.SetActive(false);
+        replayObject.SetActive(false);
+    }
+
+    public void EndCreditsStart(float delay)
+    {
+        StartCoroutine(EndCredits(delay));
+    }
+
+    IEnumerator EndCredits(float delay)
+    {
+        titleObject.SetActive(true); 
+
+        yield return new WaitForSeconds(delay);
+        jonnyObject.SetActive(true);
+
+        yield return new WaitForSeconds(delay);
+        benObject.SetActive(true);
+
+        yield return new WaitForSeconds(2);
+        replayObject.SetActive(true);
+        resetAvailable = true;
     }
 
     IEnumerator LerpTransformPostion(float duration, Transform _transform, Vector3 _startPosition, Transform _endPosition, AnimationCurve _curve, bool lerpRotation = false, bool kinematicOnComplete = false)
@@ -176,6 +205,9 @@ public class GameManager : MonoBehaviour
         }
 
         fadeImage.color = new Color(0.0f, 0.0f, 0.0f, 1);
+
+        yield return new WaitForSeconds (2);
+        ResetGame();
     }
 
     IEnumerator ActivateArm(float activateTime)

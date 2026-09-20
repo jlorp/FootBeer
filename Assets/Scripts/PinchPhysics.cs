@@ -34,12 +34,12 @@ public class PinchPhysics : MonoBehaviour
         directionToFoot2 = (Feet[0].transform.position - transform.position);
         directionToFoot2.z=0;
 
-        foot2Pinch = Vector3.Dot(directionToFoot2, Feet[0].movementIntent);
+        foot2Pinch = Vector3.Dot(directionToFoot2.normalized, Feet[0].movementIntent);
 
         directionToFoot1 = (Feet[1].transform.position - transform.position);
         directionToFoot1.z=0;
 
-        foot1Pinch = Vector3.Dot(directionToFoot1, Feet[1].movementIntent);
+        foot1Pinch = Vector3.Dot(directionToFoot1.normalized, Feet[1].movementIntent);
     }
 
     void DampenVelocityTowardsBeer()

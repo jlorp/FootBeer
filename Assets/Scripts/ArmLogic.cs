@@ -48,6 +48,10 @@ public class ArmLogic : MonoBehaviour
     public Vector3 desiredElbowAngleLow, desiredElbowAngleHigh;
     Vector3 elbowTargetPosition;
 
+    //pingpong
+    int currentRotation = 0;
+    bool swished2 = false;
+
     void Start()
     {
         startRotation = elbow.localRotation;
@@ -139,14 +143,35 @@ public class ArmLogic : MonoBehaviour
     {
         if(!allowArmDrop) return;
 
-        if(beercan.position.y > minCanGrabPosition) canInRange = true;
-        if(beercan.position.y < maxCanGrabPosition) canInRange = false;
+        if(beercan.position.y > minCanGrabPosition && !canInRange && !holdingBeer) 
+        {
+            OnCanInRange();
+        }
+        
+        if(beercan.position.y < maxCanGrabPosition && canInRange && !holdingBeer) 
+        {
+            OnCanOutOfRange();
+        }
 
         if(holdingBeer)
         {
             canInRange = wristFired;
         } 
     } 
+
+    void OnCanInRange()
+    {
+        canInRange = true;
+        float pitch = Random.Range(0.8f, 1f);
+        AudioManager.Instance.PlaySoundAfterDelay(AudioManager.Instance.armEnterWater, 0.5f, pitch, handPositionTarget.position, 0.25f);
+    }
+
+    void OnCanOutOfRange()
+    {
+        canInRange = false;
+        float pitch = Random.Range(0.6f, 0.75f);
+        AudioManager.Instance.PlaySoundAfterDelay(AudioManager.Instance.armEnterWater, 0.35f, pitch, handPositionTarget.position, 0.1f);
+    }
 
     void RotationPingPong()
     {
@@ -168,6 +193,19 @@ public class ArmLogic : MonoBehaviour
             Quaternion upRotation = lookRotation * Quaternion.Euler(Vector3.up * rotationRange);
             Quaternion downRotation = lookRotation * Quaternion.Euler(Vector3.up * -rotationRange);
             targetRotation = Quaternion.Slerp(upRotation, downRotation, lerpPostion);
+
+            /// sound stuff, play sound on switch direction
+            int rotationRound = Mathf.FloorToInt(armRotationTime/rotationTime);
+
+            if(rotationRound != currentRotation && !wristFired)
+            {
+                currentRotation = rotationRound;
+
+                float pitch = swished2 ? Random.Range(0.9f, 1.1f) : Random.Range(0.8f, 1f);
+          
+                AudioManager.Instance.PlaySound(AudioManager.Instance.waterSwish, 0.2f, pitch, handPositionTarget.position);
+                swished2 = !swished2;
+            }
         }
         else
         {

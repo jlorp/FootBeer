@@ -8,6 +8,7 @@ public class AudioManager : MonoBehaviour
 
     public AudioSource kick;
     public AudioSource bubble;
+    public AudioSource wooshSource;
 
     public AudioSource dialogue;
     public AudioSource lakeLoop;
@@ -22,6 +23,8 @@ public class AudioManager : MonoBehaviour
     public AudioClip canOpenSound;
     public AudioClip canOpenSound2;
     public AudioClip armFireSound;
+    public AudioClip armEnterWater;
+    public AudioClip waterSwish;
     public AudioClip[] bubblePopSounds;
     public AudioClip[] canKickSounds;
     public AudioClip[] canGrabSounds;
@@ -51,12 +54,27 @@ public class AudioManager : MonoBehaviour
         kick.PlayOneShot(splashSound);
     }
 
-    public void PlaySound(AudioClip _sound, float _volume, float _pitch, Vector3 _worldPosition)
+    public void PlaySoundAfterDelay(AudioClip _sound, float _volume, float _pitch, Vector3 _worldPosition, float delay)
     {
-        kick.volume = _volume;
-        kick.pitch = _pitch;
-        kick.panStereo= GetStereoPosition(_worldPosition);
-        kick.PlayOneShot(_sound);
+        StartCoroutine(SoundAfterDelay(_sound,_volume,_pitch, _worldPosition, delay));
+    }
+
+    IEnumerator SoundAfterDelay(AudioClip _sound, float _volume, float _pitch, Vector3 _worldPosition, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+
+        PlaySound(_sound,_volume,_pitch, _worldPosition, 1);
+    }
+
+    public void PlaySound(AudioClip _sound, float _volume, float _pitch, Vector3 _worldPosition, int _source = 2)
+    {
+        AudioSource _sourceA = kick;
+        if (_source == 1) _sourceA = wooshSource;
+
+        _sourceA.volume = _volume;
+        _sourceA.pitch = _pitch;
+        _sourceA.panStereo= GetStereoPosition(_worldPosition);
+        _sourceA.PlayOneShot(_sound);
     }
 
     public void PlayDialogue(AudioClip _sound, float _volume, Vector3 _worldPosition)

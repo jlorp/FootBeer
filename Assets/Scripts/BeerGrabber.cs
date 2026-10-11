@@ -25,12 +25,27 @@ public class BeerGrabber : MonoBehaviour
         {
             Vector3 beerLocalPosition = childthing.InverseTransformPoint(other.transform.position);
 
-            bool beerinRange = Mathf.Abs(beerLocalPosition.y) <= maxGrabDistance;
+            float beerHandYOffset = Mathf.Abs(beerLocalPosition.y);
+            bool inGrabRangeY= beerHandYOffset <= maxGrabDistance;
+
+            // check difference between arm rotation and beer rotation. only allow bonk when hitting long side of beer
+
+            float beerDot = Mathf.Abs(Vector3.Dot(beer.transform.up, arm.handPositionTarget.right));
+            bool hitBeerShortEnd= beerDot > .6f;
+            bool goodGrabShortEnd = (hitBeerShortEnd && beerHandYOffset < 0.1f);
+
 
             //Debug.Log(beerLocalPosition.y);
-            if(beerinRange && arm.wristExtending)
+            if(arm.wristExtending)
             {
-                GrabBeer(beer);
+                if(inGrabRangeY || goodGrabShortEnd)
+                {
+                    GrabBeer(beer);
+                }
+                else if(!hitBeerShortEnd)
+                {
+                    FlickBeer(beer, beerLocalPosition.y);
+                }
             }
             else
             {

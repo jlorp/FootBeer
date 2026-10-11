@@ -238,7 +238,8 @@ public class FeetMovement : MonoBehaviour
         crotchMovementInput =  leftFootCrotchInput + rightFootCrotchInput;
         crotchRotateInput = (rightFootCrotchInput.y - leftFootCrotchInput.y) / crotchMoveSpeedLimit;
 
-        if(arm.holdingBeer && crotchMovementInput.magnitude == 0) crotchMovementInput = Vector3.up * .25f;
+        if(arm.holdingBeer && crotchMovementInput.y < 0.3f) crotchMovementInput = Vector3.up * 0.3f;
+        if(arm.holdingBeer) crotchRotateInput = 0;
     }
 
     public void ResetPlayerPosition()

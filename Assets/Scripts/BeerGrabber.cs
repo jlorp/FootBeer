@@ -38,14 +38,7 @@ public class BeerGrabber : MonoBehaviour
             //Debug.Log(beerLocalPosition.y);
             if(arm.wristExtending)
             {
-                if(inGrabRangeY || goodGrabShortEnd)
-                {
-                    GrabBeer(beer);
-                }
-                else if(!hitBeerShortEnd)
-                {
-                    FlickBeer(beer, beerLocalPosition.y);
-                }
+                GrabBeer(beer);
             }
             else
             {

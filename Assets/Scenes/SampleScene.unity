@@ -761,29 +761,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1185661526}
   m_PrefabAsset: {fileID: 0}
---- !u!136 &203116735
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 919132149223157228}
-  m_Material: {fileID: 13400000, guid: 9ec1bfd1c31621b4d88631319e101f5e, type: 2}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.040550098
-  m_Height: 0.18086088
-  m_Direction: 1
-  m_Center: {x: -0.000000009313226, y: 0.00040594116, z: 0.0000000018626451}
 --- !u!65 &203116736
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -8098,7 +8075,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 849b9743532bb314a9b3be5849024f26, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxGroundAngle: 65
+  maxGroundAngle: 90
   atLimit: 0
   directionToAnchor: {x: 0, y: 0, z: 0}
   OnGround: 0
@@ -35956,7 +35933,7 @@ PrefabInstance:
     - target: {fileID: 4733735964745510690, guid: 0102ec671be1e584db766d43bd40cd9f,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: -0.41140845
+      value: -0.41140848
       objectReference: {fileID: 0}
     - target: {fileID: 4733735964745510690, guid: 0102ec671be1e584db766d43bd40cd9f,
         type: 3}
@@ -35966,7 +35943,7 @@ PrefabInstance:
     - target: {fileID: 4733735964745510690, guid: 0102ec671be1e584db766d43bd40cd9f,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.26901558
+      value: -0.2690156
       objectReference: {fileID: 0}
     - target: {fileID: 4733735964745510690, guid: 0102ec671be1e584db766d43bd40cd9f,
         type: 3}
@@ -36804,12 +36781,12 @@ PrefabInstance:
     - target: {fileID: 4733735964745510690, guid: 0102ec671be1e584db766d43bd40cd9f,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.4204835
+      value: 0.42048353
       objectReference: {fileID: 0}
     - target: {fileID: 4733735964745510690, guid: 0102ec671be1e584db766d43bd40cd9f,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.0751199
+      value: 0.075119816
       objectReference: {fileID: 0}
     - target: {fileID: 4733735964745510690, guid: 0102ec671be1e584db766d43bd40cd9f,
         type: 3}
@@ -37444,10 +37421,10 @@ GameObject:
   - component: {fileID: 543450653497112406}
   - component: {fileID: 203116737}
   - component: {fileID: 203116736}
-  - component: {fileID: 203116735}
   - component: {fileID: 3469287837414275316}
   - component: {fileID: 3469287837414275317}
   - component: {fileID: 3469287837414275318}
+  - component: {fileID: 3469287837414275319}
   m_Layer: 0
   m_Name: Beer Can
   m_TagString: Untagged
@@ -38314,6 +38291,7 @@ MonoBehaviour:
   minCanGrabPosition: 0.25
   maxCanGrabPosition: 0.15
   allowArmDrop: 0
+  beer: {fileID: 3469287837414275317}
   handPosition: {fileID: 7359612404157049874}
   handPositionTarget: {fileID: 1241893031}
   forearmScaler: {fileID: 542419230600140975}
@@ -38386,7 +38364,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   body: {fileID: 0}
   collider: {fileID: 203116736}
-  collider2: {fileID: 203116735}
+  OnGround: 0
+  groundCheck: {fileID: 3469287837414275319}
 --- !u!114 &3469287837414275318
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -38406,6 +38385,26 @@ MonoBehaviour:
   minVolume: 0
   maxVolume: 1
   sandMaterial: {fileID: 13400000, guid: 956dba188b7dfb1418bddf47e73912b0, type: 2}
+--- !u!114 &3469287837414275319
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 919132149223157228}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2ffa3f103e82ebc478cb04c9f0b6c83c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxGroundAngle: 25
+  OnGround: 0
+  visuallyGrounded: 0
+  groundMask:
+    serializedVersion: 2
+    m_Bits: 128
+  collider: {fileID: 203116736}
+  skinHeight: -0.001
 --- !u!4 &3525973577443747808
 Transform:
   m_ObjectHideFlags: 0

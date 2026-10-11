@@ -24,7 +24,9 @@ public class ArmLogic : MonoBehaviour
     [HideInInspector]public bool allowArmDrop = false;
 
     float armRotationTime = 0f;
+    // beer
 
+    public Beer beer;
     //solving IK
     float forearmLength, upperArmLength;
     public Transform handPosition;
@@ -143,12 +145,12 @@ public class ArmLogic : MonoBehaviour
     {
         if(!allowArmDrop) return;
 
-        if(beercan.position.y > minCanGrabPosition && !canInRange && !holdingBeer) 
+        if(!beer.groundCheck.visuallyGrounded && !canInRange && !holdingBeer) 
         {
             OnCanInRange();
         }
         
-        if(beercan.position.y < maxCanGrabPosition && canInRange && !holdingBeer) 
+        if(beer.OnGround && canInRange && !holdingBeer) 
         {
             OnCanOutOfRange();
         }
@@ -163,14 +165,14 @@ public class ArmLogic : MonoBehaviour
     {
         canInRange = true;
         float pitch = Random.Range(0.8f, 1f);
-        AudioManager.Instance.PlaySoundAfterDelay(AudioManager.Instance.armEnterWater, 0.5f, pitch, handPositionTarget.position, 0.25f);
+        //AudioManager.Instance.PlaySoundAfterDelay(AudioManager.Instance.armEnterWater, 0.5f, pitch, handPositionTarget.position, 0.25f);
     }
 
     void OnCanOutOfRange()
     {
         canInRange = false;
         float pitch = Random.Range(0.6f, 0.75f);
-        AudioManager.Instance.PlaySoundAfterDelay(AudioManager.Instance.armEnterWater, 0.35f, pitch, handPositionTarget.position, 0.1f);
+        //AudioManager.Instance.PlaySoundAfterDelay(AudioManager.Instance.armEnterWater, 0.35f, pitch, handPositionTarget.position, 0.1f);
     }
 
     void RotationPingPong()
@@ -203,7 +205,7 @@ public class ArmLogic : MonoBehaviour
 
                 float pitch = swished2 ? Random.Range(0.9f, 1.1f) : Random.Range(0.8f, 1f);
           
-                AudioManager.Instance.PlaySound(AudioManager.Instance.waterSwish, 0.2f, pitch, handPositionTarget.position);
+                //AudioManager.Instance.PlaySound(AudioManager.Instance.waterSwish, 0.2f, pitch, handPositionTarget.position);
                 swished2 = !swished2;
             }
         }

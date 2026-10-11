@@ -6,33 +6,40 @@ public class Beer : MonoBehaviour
 {
     public Rigidbody body;
     public BoxCollider collider;
-    public CapsuleCollider collider2;
+
     bool isGrabbed = false;
+    public bool OnGround;
+    public GroundedCheck groundCheck;
 
     void Start()
     {
         body = GetComponent<Rigidbody>();
     }
+
     public void OnDrop()
     {
         body.isKinematic = false;
         collider.enabled = true;
-        collider2.enabled = true;
         isGrabbed = false;
     }
-
+    
     public void OnGrab()
     {
         body.isKinematic = true;
         collider.enabled = false;
-        collider2.enabled = false;
         isGrabbed = true;
     }
 
     void FixedUpdate()
     {
-        if(!isGrabbed) return;
+        if(!isGrabbed) 
+        {
+            OnGround = groundCheck.OnGround;
+            return;
+        }
+
         transform.localPosition = Vector3.zero;
         transform.localRotation = Quaternion.identity;
     }
+
 }

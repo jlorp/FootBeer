@@ -58,11 +58,14 @@ public class JellyVertex : MonoBehaviour
         currentVelocity += noise * vertRedAmount * Time.deltaTime * positionEffect;
     }
 
-    public void ApplyPressureToVertex(Transform _transform, Vector3 _position, float _pressure)
+    public void ApplyPressureToVertex(Transform _transform, Vector3 _position, Vector3 _pressure)
     {
         Vector3 distanceVertexPoint = currentVertexPosition - _transform.InverseTransformPoint(_position);
-        float adaptedPressure = _pressure/(1f + distanceVertexPoint.sqrMagnitude);
-        float velocity = adaptedPressure * Time.deltaTime;
-        currentVelocity += distanceVertexPoint.normalized * velocity;
+        distanceVertexPoint*= 25f;
+        float falloff = (1f + distanceVertexPoint.sqrMagnitude);
+        Vector3 adaptedPressure = _pressure / (1f + distanceVertexPoint.sqrMagnitude);
+
+        Vector3 addedForce = adaptedPressure * Time.deltaTime;
+        currentVelocity += addedForce * vertRedAmount;
     }
 }

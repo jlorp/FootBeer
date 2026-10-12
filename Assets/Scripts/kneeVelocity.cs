@@ -9,7 +9,6 @@ public class kneeVelocity : MonoBehaviour
     Rigidbody rb;
     public Transform targetPosition;
 
-
     void Start()
     {
         rb = GetComponent<Rigidbody>();

@@ -22,12 +22,13 @@ public class Jellyfier : MonoBehaviour
     JellyVertex[] jellyVerticies;
     Vector3[] currentMeshVerticies;
 
+    public List<Rigidbody> outsideForceList = new List<Rigidbody>();
+
+
     private void Start()
     {
         meshFilter = GetComponent<MeshFilter>();
         mesh = meshFilter.mesh;
-
-        //body.angularVelocity= new Vector3(0,1,1);
 
         GetVertices();
     }
@@ -47,9 +48,13 @@ public class Jellyfier : MonoBehaviour
     private void Update()
     {
         ApplyPressureToFullForm(-body.velocity * Time.deltaTime * hairMovement);
-        //ApplyAngularPressureToFullForm();
         ApplyNoise(scale, scrollSpeed, positionEffect);
         UpdateVertices();
+
+        foreach (Rigidbody body in outsideForceList)
+        {
+            ApplyPressureToPoint(body.transform.position, body.velocity * Time.deltaTime);
+        }
     }
 
     private void UpdateVertices()
@@ -88,14 +93,6 @@ public class Jellyfier : MonoBehaviour
         }
     }
 
-    public void ApplyAngularPressureToFullForm()
-    {
-        for(int i = 0; i < jellyVerticies.Length; i++)
-        {
-            jellyVerticies[i].ApplyAngularPressureToFullForm(body);
-        }
-    }  
-
     public void ApplyNoise(float _scale, float _scrollSpeed, float _positionEffect)
     {
         for(int i = 0; i < jellyVerticies.Length; i++)
@@ -104,11 +101,28 @@ public class Jellyfier : MonoBehaviour
         }
     }   
 
-    public void ApplyPressureToPoint(Vector3 _point, float _pressure)
+    public void ApplyPressureToPoint(Vector3 _point, Vector3 _pressure)
     {
+
         for(int i = 0; i < jellyVerticies.Length; i++)
         {
-            jellyVerticies[i].ApplyPressureToVertex(transform, _point, _pressure);
+            jellyVerticies[i].ApplyPressureToVertex(transform, _point, _pressure * 250);
+        }
+    }
+
+    void OnTriggerEnter(Collider other)
+    {
+        if (other.TryGetComponent<HairEffector>(out HairEffector effector))
+        {
+            if(effector.body != body) outsideForceList.Add(effector.body); 
+        }
+    }
+
+    void OnTriggerExit(Collider other)
+    {
+        if (other.TryGetComponent<HairEffector>(out HairEffector effector))
+        {
+            if (outsideForceList.Contains(effector.body)) outsideForceList.Remove(effector.body);
         }
     }
 }

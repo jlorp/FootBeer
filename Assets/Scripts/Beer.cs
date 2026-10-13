@@ -32,11 +32,9 @@ public class Beer : MonoBehaviour
 
     void FixedUpdate()
     {
-        if(!isGrabbed) 
-        {
-            OnGround = groundCheck.OnGround;
-            return;
-        }
+        OnGround = groundCheck.OnGround;
+
+        if(!isGrabbed) return;
 
         transform.localPosition = Vector3.zero;
         transform.localRotation = Quaternion.identity;

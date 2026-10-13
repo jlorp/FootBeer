@@ -19,6 +19,7 @@ public class GroundedCheck : MonoBehaviour
 
     public Collider collider;
     public float skinHeight;
+    public ArmLogic arm;
 
     void Start()
     {
@@ -42,6 +43,7 @@ public class GroundedCheck : MonoBehaviour
             normal.z = 0;
             normal = normal.normalized;
 			float upDot = Vector3.Dot(Vector3.up, normal);
+
             if (upDot >= minDot && isOnGroundLayer) 
             {
 				groundContactCount += 1;
@@ -78,12 +80,12 @@ public class GroundedCheck : MonoBehaviour
         stepsSinceLastGrounded += 1;
         if(OnGround) stepsSinceLastGrounded = 0;
 
-        if (rb.IsSleeping()) 
+        if (rb.IsSleeping() ) 
         {
             groundContactCount = 1;
         }
 
-        OnGround = (groundContactCount > 0);
+        OnGround = (groundContactCount > 0 && !arm.holdingBeer);
     
         ClearState();
         VisualGroundCheck();

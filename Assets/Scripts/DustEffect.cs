@@ -20,14 +20,17 @@ public class DustEffect : MonoBehaviour
         Vector3 _position = transform.position;
         _position.x = beerCan.position.x;
         transform.position = _position;
+    }
 
+    void FixedUpdate()
+    {
         var emission = ps.emission;
+
         if(!groundchecker.OnGround)
         {
             emission.rateOverDistanceMultiplier = 0;
-            return;
         }
 
-        if(emission.rateOverDistanceMultiplier == 0) emission.rateOverDistanceMultiplier = 20;
+        if(emission.rateOverDistanceMultiplier == 0 && groundchecker.OnGround) emission.rateOverDistanceMultiplier = 20;
     }
 }

@@ -107,7 +107,7 @@ public class Jellyfier : MonoBehaviour
 
         for(int i = 0; i < jellyVerticies.Length; i++)
         {
-            jellyVerticies[i].ApplyPressureToVertex(transform, _point, pressure_localized * 200);
+            jellyVerticies[i].ApplyPressureToVertex(transform, _point, pressure_localized * 250);
         }
     }
 

@@ -21,8 +21,10 @@ public class HeadAnimation : MonoBehaviour
 
     public Vector2 blinkduration;
 
-    public SpriteRenderer rEye, lEye;
+    public SpriteRenderer rEye, lEye, rPupilS, lPupilS;
     public Sprite rEyeOpen, rEyeBlink, lEyeOpen, lEyeBlink;
+
+    Sprite lPupilDefault, rPupilDefault;
 
     float timeToBlink;
 
@@ -30,12 +32,20 @@ public class HeadAnimation : MonoBehaviour
 
     public float rEyeMinX, rEyeMaxX, rEyeMinY, rEyeMaxY;
 
+    [Header("Nutshot")]
+    public float crossEyedDuration;
+    public Vector3 rPupilPositionCross, lPupilPositionCross;
+    public Sprite rEyeCross, lEyeCross, lPupilCross, rPupilCross;
+    bool crossEyed;
+
     void Start()
     {
         neckBase = neck.localEulerAngles;
         neck1Base = neck1.localEulerAngles;
         headBase = head.localEulerAngles;
         timeToBlink = Random.Range(blinkTimeRange.x, blinkTimeRange.y);
+        rPupilDefault = rPupilS.sprite;
+        lPupilDefault = lPupilS.sprite;
     }
 
     IEnumerator Blink()
@@ -49,11 +59,41 @@ public class HeadAnimation : MonoBehaviour
 
         yield return new WaitForSeconds(blinkTime);
 
+        if(!crossEyed) ResetFace();
+    }
+
+    void ResetFace()
+    {
         rEye.sprite = rEyeOpen;
         lEye.sprite = lEyeOpen;
+        rPupilS.sprite = rPupilDefault;
+        lPupilS.sprite = lPupilDefault;
+
         timeToBlink = Random.Range(blinkTimeRange.x, blinkTimeRange.y);
         rPupil.gameObject.SetActive(true);
         lPupil.gameObject.SetActive(true);
+    }
+
+    public void NutshotFace()
+    {
+        StartCoroutine(NutshotFacePose());
+    }
+
+    IEnumerator NutshotFacePose()
+    {
+        crossEyed = true;
+        rEye.sprite = rEyeCross;
+        lEye.sprite = lEyeCross;
+        rPupilS.sprite = rPupilCross;
+        lPupilS.sprite = lPupilCross;
+        rPupil.localPosition = rPupilPositionCross;
+        lPupil.localPosition = lPupilPositionCross;
+
+        yield return new WaitForSeconds(crossEyedDuration);
+
+        crossEyed = false;
+
+        ResetFace();
     }
 
     void Update()
@@ -73,6 +113,8 @@ public class HeadAnimation : MonoBehaviour
 
     void EyeMovement(Transform eye, Transform pupil, float eyeYMin)
     {
+        if(crossEyed) return;
+
         Vector3 beerDirectionR = (beer.position - eye.position);
         beerDirectionR = eye.InverseTransformDirection(beerDirectionR);
         float pupilX = (Mathf.Clamp(beerDirectionR.x * 2f,-1,1));

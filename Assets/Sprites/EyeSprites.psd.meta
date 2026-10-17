@@ -113,10 +113,10 @@ TextureImporter:
       name: L_Pupil
       rect:
         serializedVersion: 2
-        x: 20
-        y: 465
-        width: 32
-        height: 20
+        x: 13
+        y: 450
+        width: 49
+        height: 50
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -134,10 +134,10 @@ TextureImporter:
       name: RPupil
       rect:
         serializedVersion: 2
-        x: 85
-        y: 464
-        width: 28
-        height: 24
+        x: 74
+        y: 455
+        width: 51
+        height: 46
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -235,6 +235,90 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: LeftEye_Shock
+      rect:
+        serializedVersion: 2
+        x: 100
+        y: 143
+        width: 97
+        height: 78
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 1, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b99e74b9954d123438ecd943cb956e1f
+      internalID: 62004309
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: RightEye_Shock
+      rect:
+        serializedVersion: 2
+        x: 266
+        y: 148
+        width: 118
+        height: 82
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ea4597f1bfd8db94fac5a0a348b28082
+      internalID: -339063638
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LPupil_Shock
+      rect:
+        serializedVersion: 2
+        x: 10
+        y: 230
+        width: 46
+        height: 50
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 2, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1d05976f94908934788ed632da6e49e8
+      internalID: 1127220170
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: RPupil_Shock
+      rect:
+        serializedVersion: 2
+        x: 16
+        y: 185
+        width: 44
+        height: 47
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d8a0dab3089230b4b8982725566311d1
+      internalID: -979851805
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -246,11 +330,15 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
+      LPupil_Shock: 1127220170
       L_Pupil: 611025934
       LeftBlink: 794117569
       LeftEye: 310279397
+      LeftEye_Shock: 62004309
       RPupil: 81153434
+      RPupil_Shock: -979851805
       RightBlink: 2005941047
+      RightEye_Shock: -339063638
       Righteye: 1549509230
   mipmapLimitGroupName: 
   pSDRemoveMatte: 1

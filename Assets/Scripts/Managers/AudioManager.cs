@@ -30,6 +30,10 @@ public class AudioManager : MonoBehaviour
     public AudioClip[] canGrabSounds;
     public AudioClip[] tabTouchSounds;
 
+    [Header("NutSlap sounds")]
+    public AudioClip slapNut;
+    public AudioSource nutSource;
+
     void Start()
     {
         Instance = this;
@@ -70,6 +74,7 @@ public class AudioManager : MonoBehaviour
     {
         AudioSource _sourceA = kick;
         if (_source == 1) _sourceA = wooshSource;
+        if (_source == 3) _sourceA = nutSource;
 
         _sourceA.volume = _volume;
         _sourceA.pitch = _pitch;

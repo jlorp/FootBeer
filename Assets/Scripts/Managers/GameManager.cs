@@ -9,10 +9,10 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
 
-    //Ui stuff
+    [Header("UI")]
     public Image fadeImage;
 
-    //Beer Drop
+    [Header("Beer")]
     public Rigidbody beer;
     public Vector3 initialAngularVelocity;
     public ParticleSystem splashEffect;
@@ -21,13 +21,13 @@ public class GameManager : MonoBehaviour
     Quaternion beerStartRotation;
     public Transform beerDropPosition2;
 
-    //Dialogue handling
+    [Header("Dialogue")]
     public TMP_Text playerText;
 
     //Arm
     public ArmLogic oldArm;
 
-    //Belly_arm
+    [Header("Belly/Arm")]
     public Transform beerHandTarget, beerHandStartPosition, beerHandEndPosition, beerhandDrinkPosition;
     public AnimationCurve beerMovementcurve, beerSipCurve;
     public HandMover handLogic;
@@ -40,7 +40,7 @@ public class GameManager : MonoBehaviour
 
     public KeyHandler keyHandler;
 
-    //credits
+    [Header("Credits")]
     public GameObject benObject, jonnyObject, titleObject, replayObject;
     public bool resetAvailable = false;
 

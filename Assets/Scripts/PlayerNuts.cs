@@ -18,8 +18,6 @@ public class PlayerNuts : MonoBehaviour
     public float nutsackIframeTime;
     bool iframes = false;
 
-    public Rigidbody crotchRigidBody, rFootBody, lFootBody;
-
     [SerializeField] private ParticleSystem impactPFX;
 
     [Header("Spine Animation")]
@@ -31,6 +29,12 @@ public class PlayerNuts : MonoBehaviour
     public float minTimeBetweenComments; 
     int commentsMade = 0;
     float timeSinceLastComment;
+    private Coroutine spineAnimRoutine;
+
+    [Header("Dependencies")]
+    public FeetMovement _player;
+    public Rigidbody crotchRigidBody, rFootBody, lFootBody;
+    public AnimationCurve inputresponseCurve;
 
     void Start()
     {
@@ -94,12 +98,16 @@ public class PlayerNuts : MonoBehaviour
     void OnNutshot(Vector3 sackTapVelocity)
     {
         PokeNuts(sackTapVelocity);
-        StartCoroutine(RecoilAnimationSpine(1));
+
+        if(spineAnimRoutine != null) StopCoroutine(spineAnimRoutine);
+        spineAnimRoutine = StartCoroutine(RecoilAnimationSpine(1, Mathf.Sign(sackTapVelocity.x)));
+
+        _player.OnHitStun(nutsackIframeTime, inputresponseCurve);
+
         headAnimation.NutshotFace();
         Stop(0.05f);
         impactPFX.Play();
         AudioManager.Instance.PlaySound(AudioManager.Instance.slapNut, 0.025f, Random.Range(0.4f, 0.6f), transform.position, 3);
-        //NutshotComment();
     }
 
     void RecoilPoseSpine()
@@ -107,10 +115,11 @@ public class PlayerNuts : MonoBehaviour
         StartCoroutine(startIFrames());
     }
 
-    IEnumerator RecoilAnimationSpine(float duration)
+    IEnumerator RecoilAnimationSpine(float duration, float _direction)
     {
         float elapsedTime = 0f;
-        Quaternion recoilPose = Quaternion.Euler(spineRecoilPose);
+        float strength = Random.Range(1f, 1.25f);
+        Quaternion recoilPose = Quaternion.Euler(new Vector3(0,0,spineRecoilPose.z * _direction * strength));
 
         while (elapsedTime < duration)
         {
@@ -129,7 +138,7 @@ public class PlayerNuts : MonoBehaviour
         if (!_beer.OnGround)
         {
             beerToNutsDirection.y *= .25f;
-        _beer.body.velocity = beerToNutsDirection * 0.5f;
+        _beer.body.velocity = beerToNutsDirection * 0.4f;
         _beer.body.angularVelocity = beerToNutsDirection.x * 5f * Vector3.forward;
         }
     }
@@ -137,8 +146,9 @@ public class PlayerNuts : MonoBehaviour
     void PokeNuts(Vector3 _impactVelocity)
     {
         StartCoroutine(startIFrames());
-        crotchRigidBody.velocity += Vector3.up * 0.2f;
+        crotchRigidBody.velocity += Vector3.up * 0.125f;
         currentVelocity += _impactVelocity * pokeMultiplier;
+        currentVelocity.y *= 2.5f ;
 
         NutRepulse(rFootBody, _impactVelocity, true);
         NutRepulse(lFootBody, _impactVelocity, false);
@@ -154,56 +164,19 @@ public class PlayerNuts : MonoBehaviour
         if(!rightFoot) repulseDirection.x *= -1;
 
         float distanceToNut = Vector3.Distance(transform.position, _body.transform.position);
-        float minForceDistance = 0.1f;
-        float maxForceDistance = 0.3f;
+        float minForceDistance = 0.15f;
+        float maxForceDistance = 0.2f;
         distanceToNut = Mathf.Clamp(distanceToNut, minForceDistance, maxForceDistance);
         distanceToNut = (distanceToNut - minForceDistance) * (1 / (maxForceDistance - minForceDistance));
 
         float nutForceAmount = 1-distanceToNut;
 
-        _body.velocity = repulseDirection * force.magnitude * nutForceAmount;
+        _body.velocity = repulseDirection * force.magnitude * nutForceAmount * 0.75f;
     }
 
     void ApplyDrag(float _drag)
     {
         currentVelocity *= 1f - _drag * Time.deltaTime;
-    }
-
-    void NutshotComment()
-    {
-        if(timeSinceLastComment < minTimeBetweenComments) return;
-
-        switch (commentsMade)
-        {
-            case 0:
-                GameManager.Instance.PlayDialogue("fuck", .1f, 1f, 0, AudioManager.Instance.fuck);
-                break;
-            case 1:
-                GameManager.Instance.PlayDialogue("god damnit", .1f, 1f, 0f, AudioManager.Instance.fuck);
-                break;
-            case 2:
-                GameManager.Instance.PlayDialogue("christ", .1f, 1f, 0f, AudioManager.Instance.fuck);
-                break;
-            case 3:
-                GameManager.Instance.PlayDialogue("my nuts!", .1f, 1f, 0f, AudioManager.Instance.fuck);
-                break;
-            case 4:
-                GameManager.Instance.PlayDialogue("come ON", .1f, 1f, 0f, AudioManager.Instance.fuck);
-                break;
-            case 5:
-                GameManager.Instance.PlayDialogue("again?", .1f, 1f, 0f, AudioManager.Instance.fuck);
-                break;
-            case 6:
-                GameManager.Instance.PlayDialogue("Gahh", .1f, 1f, 0f, AudioManager.Instance.fuck);
-                break;
-            default:
-                commentsMade = 0;
-                GameManager.Instance.PlayDialogue("GHHHR", .1f, 1f, 0f, AudioManager.Instance.fuck);
-                break;
-        }
-
-        commentsMade +=1;
-        timeSinceLastComment = 0;
     }
 
     private bool isWaiting = false;

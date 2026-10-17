@@ -50,10 +50,13 @@ public class HeadAnimation : MonoBehaviour
 
     IEnumerator Blink()
     {
-        rEye.sprite = rEyeBlink;
-        lEye.sprite = lEyeBlink;
-        rPupil.gameObject.SetActive(false);
-        lPupil.gameObject.SetActive(false);
+        if (!crossEyed)
+        {
+            rEye.sprite = rEyeBlink;
+            lEye.sprite = lEyeBlink;
+            rPupil.gameObject.SetActive(false);
+            lPupil.gameObject.SetActive(false);
+        }
 
         float blinkTime = Random.Range(blinkduration.x, blinkduration.y);
 
@@ -82,6 +85,8 @@ public class HeadAnimation : MonoBehaviour
     IEnumerator NutshotFacePose()
     {
         crossEyed = true;
+        rPupil.gameObject.SetActive(true);
+        lPupil.gameObject.SetActive(true);
         rEye.sprite = rEyeCross;
         lEye.sprite = lEyeCross;
         rPupilS.sprite = rPupilCross;

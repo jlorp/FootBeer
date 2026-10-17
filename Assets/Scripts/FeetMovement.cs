@@ -41,6 +41,7 @@ public class FeetMovement : MonoBehaviour
     public ArmLogic arm;
 
     //Input
+    float hitstunInputMultiplier = 1;
     Vector2 rightFootInput, leftFootInput;
 
     //reset
@@ -193,6 +194,9 @@ public class FeetMovement : MonoBehaviour
     void AdjustBodyVelocity(Rigidbody body, Vector2 desiredVelocity)
     {
         float localacceleration = desiredVelocity.magnitude > .1 ? acceleration : dragNoInput;
+
+        if(hitstunInputMultiplier < 1) localacceleration = acceleration * hitstunInputMultiplier;
+        
         localacceleration= localacceleration * Time.deltaTime;
 
         Vector3 _velocity = new Vector3(
@@ -203,12 +207,34 @@ public class FeetMovement : MonoBehaviour
         body.velocity = _velocity;
     }
 
+    public void OnHitStun(float stunDuration, AnimationCurve _curve)
+    {
+        StartCoroutine(InputDelay(stunDuration, _curve));
+    }
+
+    IEnumerator InputDelay(float duration, AnimationCurve _curve)
+    {
+        float elapsedTime = 0f;
+        hitstunInputMultiplier = 0;
+
+        while (elapsedTime < duration)
+        {
+            float percentComplete = elapsedTime/duration;
+            percentComplete = _curve.Evaluate(percentComplete);
+            hitstunInputMultiplier = percentComplete;
+
+            elapsedTime += Time.deltaTime;
+            yield return null; 
+        }
+        hitstunInputMultiplier = 1;
+    }
+
     void  UpdateInputs()
     {
-        float leftX = -Input.GetAxis("Left Horizontal");
-        float leftY = Input.GetAxis("Left Vertical");
-        float rightX = -Input.GetAxis("Right Horizontal");
-        float rightY = Input.GetAxis("Right Vertical");
+        float leftX = -Input.GetAxis("Left Horizontal") * hitstunInputMultiplier;
+        float leftY = Input.GetAxis("Left Vertical") * hitstunInputMultiplier;
+        float rightX = -Input.GetAxis("Right Horizontal") * hitstunInputMultiplier;
+        float rightY = Input.GetAxis("Right Vertical") * hitstunInputMultiplier;
         
         if(arm.holdingBeer) leftY = rightY = -2f;
 

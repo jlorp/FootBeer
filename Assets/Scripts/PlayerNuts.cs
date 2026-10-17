@@ -125,7 +125,8 @@ public class PlayerNuts : MonoBehaviour
         {
             float percentComplete = elapsedTime/duration;
             float t = SpineAnimationCurve.Evaluate(percentComplete);
-            spineTransform.localRotation = Quaternion.Lerp(restingRotationSpine, recoilPose, t);
+            Quaternion targetrotation = Quaternion.Lerp(restingRotationSpine, recoilPose, t);
+            spineTransform.localRotation = Quaternion.Lerp(spineTransform.localRotation, targetrotation, Time.deltaTime * 25f);
             elapsedTime += Time.deltaTime;
             yield return null; 
         }
@@ -138,8 +139,8 @@ public class PlayerNuts : MonoBehaviour
         if (!_beer.OnGround)
         {
             beerToNutsDirection.y *= .25f;
-        _beer.body.velocity = beerToNutsDirection * 0.4f;
-        _beer.body.angularVelocity = beerToNutsDirection.x * 5f * Vector3.forward;
+            _beer.body.velocity = beerToNutsDirection * 0.4f;
+            _beer.body.angularVelocity = beerToNutsDirection.x * -10f * Vector3.forward;
         }
     }
 

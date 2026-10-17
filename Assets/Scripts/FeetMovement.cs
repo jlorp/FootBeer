@@ -37,6 +37,7 @@ public class FeetMovement : MonoBehaviour
 
     [Header("Dependencies")]
     public bool grounded;
+    public int feetGrounded= 0;
     public Rigidbody rightFootRB, leftFootRB, crotchRB;
     public ArmLogic arm;
 
@@ -133,9 +134,13 @@ public class FeetMovement : MonoBehaviour
     void MoveCrotch()
     {
         //add gravity if not grounded
-        if(!grounded)
+        if(feetGrounded == 0)
         {
-            crotchRB.velocity += (Vector3.up * -crotchFallspeed * Time.deltaTime);
+            crotchRB.velocity += (-Vector3.up * crotchFallspeed * Time.deltaTime);
+        }
+        else if (feetGrounded == 1)
+        {
+            crotchRB.velocity += (-Vector3.up * crotchFallspeed * Time.deltaTime * 0.4f);
         }
         else if(crotchMovementInput.y == 0)
         {
@@ -189,6 +194,9 @@ public class FeetMovement : MonoBehaviour
     void UpdateGrounded()
     {
         grounded = rightFoot.OnGround || leftFoot.OnGround;
+        feetGrounded=0;
+        if (rightFoot.OnGround) feetGrounded +=1;
+        if (leftFoot.OnGround) feetGrounded +=1;
     }
 
     void AdjustBodyVelocity(Rigidbody body, Vector2 desiredVelocity)

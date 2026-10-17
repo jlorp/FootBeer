@@ -107,7 +107,7 @@ public class PlayerNuts : MonoBehaviour
         headAnimation.NutshotFace();
         Stop(0.05f);
         impactPFX.Play();
-        AudioManager.Instance.PlaySound(AudioManager.Instance.slapNut, 0.025f, Random.Range(0.4f, 0.6f), transform.position, 3);
+        AudioManager.Instance.PlaySound(AudioManager.Instance.slapNut, 0.05f, Random.Range(0.4f, 0.6f), transform.position, 3);
     }
 
     void RecoilPoseSpine()

@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class HeadAnimation : MonoBehaviour
 {
+    [Header("Head")]
     public Rigidbody crotchRB;
     public Transform neck, neck1, head;
     public float crotchYspeedEffect;
@@ -13,39 +14,54 @@ public class HeadAnimation : MonoBehaviour
 
     public float wobbleSpeed, wobbleStrength;
 
-    //eyeStuff
+    [Header("Eyes")]
 
     public Transform rPupil, lPupil;
     
     public Vector2 blinkTimeRange;
-
     public Vector2 blinkduration;
 
     public SpriteRenderer rEye, lEye, rPupilS, lPupilS;
     public Sprite rEyeOpen, rEyeBlink, lEyeOpen, lEyeBlink;
 
-    Sprite lPupilDefault, rPupilDefault;
+    public float rEyeMinX, rEyeMaxX, rEyeMinY, rEyeMaxY;
 
     float timeToBlink;
+    Sprite lPupilDefault, rPupilDefault;
 
-    public Transform beer;
-
-    public float rEyeMinX, rEyeMaxX, rEyeMinY, rEyeMaxY;
+    [Header("Eyebrows")]
+    public Transform rEyebrow;
+    public Transform lEyebrow;
+    
+    Vector3 rBrowStartPos, lBrowStartPos;
+    Quaternion rBrowStartRot, lBrowStartRot;
 
     [Header("Nutshot")]
     public float crossEyedDuration;
     public Vector3 rPupilPositionCross, lPupilPositionCross;
+    public Vector3 rBrowPositionCross, lBrowPositionCross;
+    public Quaternion rBrowRotationCross, lBrowRotationCross;
     public Sprite rEyeCross, lEyeCross, lPupilCross, rPupilCross;
     bool crossEyed;
+
+    [Header("Dependencies")]
+    public Transform beer;
 
     void Start()
     {
         neckBase = neck.localEulerAngles;
         neck1Base = neck1.localEulerAngles;
         headBase = head.localEulerAngles;
+
         timeToBlink = Random.Range(blinkTimeRange.x, blinkTimeRange.y);
+
         rPupilDefault = rPupilS.sprite;
         lPupilDefault = lPupilS.sprite;
+
+        rBrowStartPos = rEyebrow.localPosition;
+        lBrowStartPos = lEyebrow.localPosition;
+        rBrowStartRot = rEyebrow.localRotation;
+        lBrowStartRot = lEyebrow.localRotation;
     }
 
     IEnumerator Blink()
@@ -75,6 +91,11 @@ public class HeadAnimation : MonoBehaviour
         timeToBlink = Random.Range(blinkTimeRange.x, blinkTimeRange.y);
         rPupil.gameObject.SetActive(true);
         lPupil.gameObject.SetActive(true);
+
+        rEyebrow.localPosition = rBrowStartPos;
+        lEyebrow.localPosition = lBrowStartPos;
+        rEyebrow.localRotation = rBrowStartRot;
+        lEyebrow.localRotation = lBrowStartRot;
     }
 
     public void NutshotFace()
@@ -85,14 +106,20 @@ public class HeadAnimation : MonoBehaviour
     IEnumerator NutshotFacePose()
     {
         crossEyed = true;
-        rPupil.gameObject.SetActive(true);
-        lPupil.gameObject.SetActive(true);
         rEye.sprite = rEyeCross;
         lEye.sprite = lEyeCross;
+
+        rPupil.gameObject.SetActive(true);
+        lPupil.gameObject.SetActive(true);
         rPupilS.sprite = rPupilCross;
         lPupilS.sprite = lPupilCross;
         rPupil.localPosition = rPupilPositionCross;
         lPupil.localPosition = lPupilPositionCross;
+
+        rEyebrow.localPosition = rBrowPositionCross;
+        lEyebrow.localPosition = lBrowPositionCross;
+        rEyebrow.localRotation = rBrowRotationCross;
+        lEyebrow.localRotation = lBrowRotationCross;
 
         yield return new WaitForSeconds(crossEyedDuration);
 

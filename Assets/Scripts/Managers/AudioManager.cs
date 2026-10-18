@@ -29,6 +29,7 @@ public class AudioManager : MonoBehaviour
     public AudioClip[] canKickSounds;
     public AudioClip[] canGrabSounds;
     public AudioClip[] tabTouchSounds;
+    public AudioClip[] screamSounds;
 
     [Header("NutSlap sounds")]
     public AudioClip slapNut;
@@ -82,11 +83,21 @@ public class AudioManager : MonoBehaviour
         _sourceA.PlayOneShot(_sound);
     }
 
-    public void PlayDialogue(AudioClip _sound, float _volume, Vector3 _worldPosition)
+    public void PlayDialogue(AudioClip _sound, float _volume, Vector3 _worldPosition,float _pitch = 1)
     {
+        dialogue.pitch = _pitch;
         dialogue.volume = _volume;
         dialogue.panStereo= GetStereoPosition(_worldPosition);
         dialogue.PlayOneShot(_sound);
+    }
+
+    public void PlayDialogue(AudioClip[] _soundArray, float _volume, Vector3 _worldPosition, float _pitch = 1)
+    {
+        dialogue.volume = _volume;
+        dialogue.pitch = _pitch;
+        dialogue.panStereo= GetStereoPosition(_worldPosition);
+        int sound = UnityEngine.Random.Range(0, _soundArray.Length);
+        dialogue.PlayOneShot(_soundArray[sound]);
     }
 
     public void PlaySound(AudioClip[] _soundArray, float _volume, float _pitch, Vector3 _worldPosition)

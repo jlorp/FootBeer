@@ -30,6 +30,7 @@ public class PlayerNuts : MonoBehaviour
     int commentsMade = 0;
     float timeSinceLastComment;
     private Coroutine spineAnimRoutine;
+    public float recoilAnimationTime;
 
     [Header("Dependencies")]
     public FeetMovement _player;
@@ -104,7 +105,7 @@ public class PlayerNuts : MonoBehaviour
 
         _player.OnHitStun(nutsackIframeTime, inputresponseCurve);
 
-        headAnimation.NutshotFace(nutsackIframeTime);
+        headAnimation.NutshotFace(recoilAnimationTime);
         Stop(0.05f);
         impactPFX.Play();
         AudioManager.Instance.PlaySound(AudioManager.Instance.slapNut, 0.05f, Random.Range(0.4f, 0.6f), transform.position, 3);

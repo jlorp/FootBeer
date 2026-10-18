@@ -140,7 +140,7 @@ public class FeetMovement : MonoBehaviour
         }
         else if (feetGrounded == 1)
         {
-            crotchRB.velocity += (-Vector3.up * crotchFallspeed * Time.deltaTime * 0.25f);
+            crotchRB.velocity += (-Vector3.up * crotchFallspeed * Time.deltaTime * 0f);
         }
         else if(crotchMovementInput.y == 0)
         {

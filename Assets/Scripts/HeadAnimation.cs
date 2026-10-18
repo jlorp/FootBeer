@@ -36,6 +36,9 @@ public class HeadAnimation : MonoBehaviour
     Vector3 rBrowStartPos, lBrowStartPos;
     Quaternion rBrowStartRot, lBrowStartRot;
 
+    [Header("Mouth")]
+    public FacePieceSwapper mouthAnimator;
+
     [Header("Nutshot")]
     public Vector3 rPupilPositionCross, lPupilPositionCross;
     public Vector3 rBrowPositionCross, lBrowPositionCross;
@@ -95,11 +98,13 @@ public class HeadAnimation : MonoBehaviour
         lEyebrow.localPosition = lBrowStartPos;
         rEyebrow.localRotation = rBrowStartRot;
         lEyebrow.localRotation = lBrowStartRot;
+        mouthAnimator.SwapPiece(0.25f, "Idle");
     }
 
     public void NutshotFace(float crossEyedDuration)
     {
         StartCoroutine(NutshotFacePose(crossEyedDuration));
+        mouthAnimator.SwapPiece(0.3f, "Angry");
     }
 
     IEnumerator NutshotFacePose(float crossEyedDuration)
@@ -119,6 +124,8 @@ public class HeadAnimation : MonoBehaviour
         lEyebrow.localPosition = lBrowPositionCross;
         rEyebrow.localRotation = rBrowRotationCross;
         lEyebrow.localRotation = lBrowRotationCross;
+
+        AudioManager.Instance.PlayDialogue(AudioManager.Instance.screamSounds[1], 0.2f, transform.position,Random.Range(1.0f, 1.25f));
 
         yield return new WaitForSeconds(crossEyedDuration);
 

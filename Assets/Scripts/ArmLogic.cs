@@ -20,7 +20,6 @@ public class ArmLogic : MonoBehaviour
     public Transform elbow,shoulder;
     public float armSpeed;
 
-    public float minCanGrabPosition, maxCanGrabPosition;
     [HideInInspector]public bool allowArmDrop = false;
 
     float armRotationTime = 0f;

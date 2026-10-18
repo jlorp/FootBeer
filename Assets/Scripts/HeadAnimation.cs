@@ -37,7 +37,6 @@ public class HeadAnimation : MonoBehaviour
     Quaternion rBrowStartRot, lBrowStartRot;
 
     [Header("Nutshot")]
-    public float crossEyedDuration;
     public Vector3 rPupilPositionCross, lPupilPositionCross;
     public Vector3 rBrowPositionCross, lBrowPositionCross;
     public Quaternion rBrowRotationCross, lBrowRotationCross;
@@ -98,12 +97,12 @@ public class HeadAnimation : MonoBehaviour
         lEyebrow.localRotation = lBrowStartRot;
     }
 
-    public void NutshotFace()
+    public void NutshotFace(float crossEyedDuration)
     {
-        StartCoroutine(NutshotFacePose());
+        StartCoroutine(NutshotFacePose(crossEyedDuration));
     }
 
-    IEnumerator NutshotFacePose()
+    IEnumerator NutshotFacePose(float crossEyedDuration)
     {
         crossEyed = true;
         rEye.sprite = rEyeCross;
@@ -125,7 +124,7 @@ public class HeadAnimation : MonoBehaviour
 
         crossEyed = false;
 
-        ResetFace();
+        StartCoroutine(Blink());
     }
 
     void Update()

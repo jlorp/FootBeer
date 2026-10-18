@@ -140,7 +140,7 @@ public class FeetMovement : MonoBehaviour
         }
         else if (feetGrounded == 1)
         {
-            crotchRB.velocity += (-Vector3.up * crotchFallspeed * Time.deltaTime * 0.4f);
+            crotchRB.velocity += (-Vector3.up * crotchFallspeed * Time.deltaTime * 0.25f);
         }
         else if(crotchMovementInput.y == 0)
         {
@@ -201,15 +201,18 @@ public class FeetMovement : MonoBehaviour
 
     void AdjustBodyVelocity(Rigidbody body, Vector2 desiredVelocity)
     {
-        float localacceleration = desiredVelocity.magnitude > .1 ? acceleration : dragNoInput;
-
-        if(hitstunInputMultiplier < 1) localacceleration = acceleration * hitstunInputMultiplier;
+        float localaccelerationX = Mathf.Abs(desiredVelocity.x) > 0.1f ? acceleration : dragNoInput;
+        float localaccelerationY = Mathf.Abs(desiredVelocity.y) > 0.1f ? acceleration : dragNoInput;
         
-        localacceleration= localacceleration * Time.deltaTime;
+        if(hitstunInputMultiplier < 1) 
+        {
+            localaccelerationX = acceleration * hitstunInputMultiplier;
+            localaccelerationY = acceleration * hitstunInputMultiplier;
+        }
 
         Vector3 _velocity = new Vector3(
-            Mathf.MoveTowards(body.velocity.x, desiredVelocity.x * maxSpeed, localacceleration),
-            Mathf.MoveTowards(body.velocity.y, desiredVelocity.y * maxSpeed, localacceleration),
+            Mathf.MoveTowards(body.velocity.x, desiredVelocity.x * maxSpeed, localaccelerationX * Time.deltaTime),
+            Mathf.MoveTowards(body.velocity.y, desiredVelocity.y * maxSpeed, localaccelerationY * Time.deltaTime),
             0);
         
         body.velocity = _velocity;
